@@ -15,7 +15,9 @@ import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
 import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
+import com.gp.KuryeNet.entities.concretes.Address;
 import com.gp.KuryeNet.entities.concretes.Order;
+import com.gp.KuryeNet.entities.dtos.OrderWithAddressDto;
 import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 
 @Service
@@ -124,5 +126,19 @@ public class OrderManager implements OrderService{
 		return new SuccessDataResult<List<OrderWithCourierDto>>(this.orderDao.getOrderWithCourierDetails(),"Order With Courier Details Data Listed");
 
 	}
+	
+	
+	@Override
+	public DataResult<List<Order>> getByOrderAddress_AddressId(int addressId) {
+		return new SuccessDataResult<List<Order>>(this.orderDao.getByOrderAddress_AddressId(addressId),"Order Data Listed which selected address");
+
+	}
+
+
+	@Override
+	public DataResult<List<OrderWithAddressDto>> getOrderWithAddressDetails() {
+		return new SuccessDataResult<List<OrderWithAddressDto>>(this.orderDao.getOrderWithAddressDetails(),"Order With Address Details Data Listed");
+	}
 
 }
+

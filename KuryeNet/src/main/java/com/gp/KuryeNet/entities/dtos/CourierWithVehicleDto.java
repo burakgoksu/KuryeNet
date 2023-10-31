@@ -7,11 +7,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderWithCourierDto {
-
-	private int id;
-	private String orderNumber;
+public class CourierWithVehicleDto {
+	
+	private int courierId;
+	
 	private String courierName;
+	
 	private String courierSurname;
-
+	
+	private String vehicleType;
+	
+	private String vehicleBrand;
+	
+	private String vehiclePlate;
+	
 }

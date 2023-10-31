@@ -27,17 +27,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Order {
 	
-	public Date convertDateFormat(Date date) throws ParseException {
-		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
-		String dateString = date.toString();
-		Date convertedDate = isoFormat.parse(dateString);
-		
-		return convertedDate;
-		
-	}
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id")
@@ -66,11 +55,11 @@ public class Order {
 	@Column(name="order_type")
 	private String orderType;
 	
-	@Column(name="address_id")
-	private int addressId;
+	//@Column(name="address_id")
+	//private int addressId;
 	
-	@Column(name="provider_id")
-	private int providerId;
+	//@Column(name="provider_id")
+	//private int providerId;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
 	@Column(name="estimated_delivery_time")
@@ -88,9 +77,20 @@ public class Order {
 	@Column(name="order_status")
 	private int orderStatus;
 	
+	@Column(name="ordered_platform")
+	private int orderedPlatform;
+	
 	@ManyToOne()
 	@JoinColumn(name="courier_id")
 	private Courier courier;
+	
+	@ManyToOne()
+	@JoinColumn(name="address_id")
+	private Address orderAddress;
+	
+	@ManyToOne()
+	@JoinColumn(name="provider_id")
+	private Provider provider;
 	
 	
 }

@@ -15,6 +15,7 @@ import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
 import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
+import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
 @Service
 public class CourierManager implements CourierService{
@@ -65,6 +66,18 @@ public class CourierManager implements CourierService{
 	public DataResult<List<Courier>> getAllSortedByCourierName() {
 		Sort sort = Sort.by(Sort.Direction.ASC,"courierName");
 		return new SuccessDataResult<List<Courier>>(this.courierDao.findAll(sort),"ASC Couriers listed successfully");
+	}
+
+	@Override
+	public DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails() {
+		return new SuccessDataResult<List<CourierWithVehicleDto>>(this.courierDao.getCourierWithVehicleDetails());
+
+	}
+
+	@Override
+	public DataResult<List<Courier>> getByCourierAddress_City(String city) {
+		return new SuccessDataResult<List<Courier>>(this.courierDao.getByCourierAddress_City(city));
+
 	}
 
 }

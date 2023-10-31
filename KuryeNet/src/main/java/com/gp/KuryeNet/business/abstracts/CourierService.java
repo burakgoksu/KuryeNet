@@ -5,6 +5,7 @@ import java.util.List;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
+import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
 public interface CourierService {
 	
@@ -21,4 +22,8 @@ public interface CourierService {
 	DataResult<Courier> getByCourierIdentityNumber(String courierIdentityNumber);
 	
 	DataResult<Courier> getByCourierEmail(String courierEmail);
+	
+	DataResult<List<Courier>> getByCourierAddress_City(String city);
+	
+	DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails();
 }

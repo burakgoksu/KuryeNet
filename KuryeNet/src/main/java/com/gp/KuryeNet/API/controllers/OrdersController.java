@@ -3,7 +3,9 @@ package com.gp.KuryeNet.API.controllers;
 import com.gp.KuryeNet.business.abstracts.OrderService;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
+import com.gp.KuryeNet.entities.concretes.Address;
 import com.gp.KuryeNet.entities.concretes.Order;
+import com.gp.KuryeNet.entities.dtos.OrderWithAddressDto;
 import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 
 import java.util.Date;
@@ -86,6 +88,16 @@ public class OrdersController {
 	@GetMapping("/getByOrderWithCourierDetails")
 	public DataResult<List<OrderWithCourierDto>> getByOrderWithCourierDetails(){
 		return this.orderService.getOrderWithCourierDetails();
+	}
+	
+	@GetMapping("/getByOrderAddressId")
+	public DataResult<List<Order>> getByOrderAddress_AddressId(@RequestParam int addressId){
+		return this.orderService.getByOrderAddress_AddressId(addressId);
+	}
+	
+	@GetMapping("/getByOrderWithAddressDetails")
+	public DataResult<List<OrderWithAddressDto>> getByOrderWithAddressDetails(){
+		return this.orderService.getOrderWithAddressDetails();
 	}
 	
 	

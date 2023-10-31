@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,11 +34,11 @@ public class Courier {
 	@Column(name="birthday")
 	private Date courierBirthday;
 	
-	@Column(name="vehicle_id")
-	private int courierVehicleId;
+	//@Column(name="vehicle_id")
+	//private int courierVehicleId;
 	
-	@Column(name="address_id")
-	private int courierAddressId;
+    //@Column(name="address_id")
+    //private int courierAddressId;
 	
 	@Column(name="name")
 	private String courierName;
@@ -56,6 +58,23 @@ public class Courier {
 	@Column(name="email")
 	private String courierEmail;
 	
+	@Column(name="status")
+	private int courierStatus;
+	
+	@Column(name="daily_shipped")
+	private int daily_shipped;
+	
+	@Column(name="total_shipped")
+	private int total_shipped;
+	
 	@OneToMany(mappedBy = "courier")
 	private List<Order> orders;
+	
+	@ManyToOne()
+	@JoinColumn(name="vehicle_id")
+	private Vehicle vehicle;
+	
+	@ManyToOne()
+	@JoinColumn(name="address_id")
+	private Address courierAddress;
 }

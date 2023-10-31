@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
+import com.gp.KuryeNet.entities.concretes.Address;
 import com.gp.KuryeNet.entities.concretes.Order;
+import com.gp.KuryeNet.entities.dtos.OrderWithAddressDto;
 import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 
 public interface OrderService {
@@ -37,5 +39,9 @@ public interface OrderService {
 	DataResult<List<Order>> getByOrderHour(int orderHour);
 	
 	DataResult<List<OrderWithCourierDto>> getOrderWithCourierDetails();
+	
+	DataResult<List<OrderWithAddressDto>> getOrderWithAddressDetails();
+	
+	DataResult<List<Order>> getByOrderAddress_AddressId(int addressId);
 	
 }

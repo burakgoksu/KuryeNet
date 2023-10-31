@@ -14,6 +14,7 @@ import com.gp.KuryeNet.business.abstracts.CourierService;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
+import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
 @RestController
 @RequestMapping("/api/couriers")
@@ -45,7 +46,6 @@ public class CouriersController {
 		
 	}
 	
-	
 	@PostMapping("/add")
 	public Result add(@RequestBody Courier courier){
 		return this.courierService.add(courier);
@@ -65,5 +65,15 @@ public class CouriersController {
 	@GetMapping("/getByCourierEmail")
 	public DataResult<Courier> getByCourierEmail(@RequestParam String courierEmail){
 		return this.courierService.getByCourierEmail(courierEmail);
+	}
+	
+	@GetMapping("/getByCourierCity")
+	public DataResult<List<Courier>> getByCourierAddress_City(@RequestParam String city){
+		return this.courierService.getByCourierAddress_City(city);
+	}
+	
+	@GetMapping("/getCourierWithVehicleDetails")
+	public DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails(){
+		return this.courierService.getCourierWithVehicleDetails();
 	}
 }
