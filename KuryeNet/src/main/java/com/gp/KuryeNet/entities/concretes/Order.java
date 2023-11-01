@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orderAddress"})
 public class Order {
 	
 	@Id
@@ -35,8 +37,8 @@ public class Order {
 	@Column(name="order_number")
 	private String orderNumber;
 	
-	@Column(name="customer_id")
-	private int customerId;
+	//@Column(name="customer_id")
+	//private int customerId;
 	
 	//@Column(name="courier_id")
 	//private int courier_id;
@@ -91,6 +93,10 @@ public class Order {
 	@ManyToOne()
 	@JoinColumn(name="provider_id")
 	private Provider provider;
+	
+	@ManyToOne()
+	@JoinColumn(name="customer_id")
+	private Customer customer;
 	
 	
 }

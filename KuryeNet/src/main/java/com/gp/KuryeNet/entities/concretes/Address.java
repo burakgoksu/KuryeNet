@@ -2,13 +2,19 @@ package com.gp.KuryeNet.entities.concretes;
 
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","couriers","providers"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","couriers","providers","customers"})
 
 public class Address {
 	
@@ -63,4 +69,7 @@ public class Address {
 	
 	@OneToMany(mappedBy="providerAddress")
 	private List<Provider> providers;
+	
+	@OneToMany(mappedBy="customerAddress")
+	private List<Customer> customers;
 }
