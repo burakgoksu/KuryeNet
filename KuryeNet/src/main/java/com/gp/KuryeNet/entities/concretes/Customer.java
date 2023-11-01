@@ -2,14 +2,11 @@ package com.gp.KuryeNet.entities.concretes;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -27,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="customers")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","address","addressTitle","city","district","street","buildingNumber","floorNumber","apartmentNumber","phoneNumber"})
 public class Customer {
 	
 	@Id
@@ -60,6 +57,16 @@ public class Customer {
 	
 	@ManyToOne()
 	@JoinColumn(name="address_id")
-	private Address customerAddress; 
-
+	private Address customerAddress; 	
+	
+//	@ManyToMany()
+//	@JoinColumn(name="address_id")
+//	private List<Address> customerAddresses;
+		
+//    @ManyToMany
+//    @JoinTable(
+//        name = "customer_address", // Aracı tablonun adı
+//        joinColumns = @JoinColumn(name = "customer_id"),
+//        inverseJoinColumns = @JoinColumn(name = "address_id"))
+//    private List<Address> customerAddresses;
 }

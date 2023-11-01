@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name="addresses")
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","couriers","providers","customers"})
+
 
 public class Address {
 	
@@ -72,4 +75,16 @@ public class Address {
 	
 	@OneToMany(mappedBy="customerAddress")
 	private List<Customer> customers;
+	
+//	@JsonIgnore
+//	@ManyToMany()
+//	@JoinColumn(name="customer_id")
+//	private List<Customer> customerss;
+	
+
+//    @ManyToMany(mappedBy = "customerAddresses")
+//    @ToString.Include
+//    @JsonIgnore
+//    private List<Customer> customerAddresses;
+
 }
