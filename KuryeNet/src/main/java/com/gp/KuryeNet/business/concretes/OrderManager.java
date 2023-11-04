@@ -10,7 +10,11 @@ import org.springframework.data.domain.*;
 
 
 import com.gp.KuryeNet.business.abstracts.OrderService;
+import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -23,12 +27,13 @@ import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 @Service
 public class OrderManager implements OrderService{
 	private OrderDao orderDao;
-	
+	private OrderCheckService orderCheckService;
 
 	@Autowired
-	public OrderManager(OrderDao orderDao) {
+	public OrderManager(OrderDao orderDao,OrderCheckService orderCheckService) {
 		super();
 		this.orderDao = orderDao;
+		this.orderCheckService = orderCheckService;
 	}
 
 
@@ -40,7 +45,11 @@ public class OrderManager implements OrderService{
 
 	@Override
 	public Result add(Order order) {
-		this.orderDao.save(order);
+		orderCheckService.existsByOrderNumber(order.getOrderNumber());
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(orderCheckService);
+		if(errors != null) return errors;
+		else this.orderDao.save(order);
+		
 		return new SuccessResult("Order added");
 	}
 
@@ -138,6 +147,13 @@ public class OrderManager implements OrderService{
 	@Override
 	public DataResult<List<OrderWithAddressDto>> getOrderWithAddressDetails() {
 		return new SuccessDataResult<List<OrderWithAddressDto>>(this.orderDao.getOrderWithAddressDetails(),"Order With Address Details Data Listed");
+	}
+
+
+	@Override
+	public DataResult<Order> getByOrderId(int orderId) {
+		orderCheckService.existsOrderById(orderId);
+		return new SuccessDataResult<Order>(this.orderDao.getByOrderId(orderId));
 	}
 
 }

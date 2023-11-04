@@ -9,7 +9,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.CourierService;
+import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -17,15 +21,18 @@ import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
+
 @Service
 public class CourierManager implements CourierService{
 	
 	private CourierDao courierDao;
+	private CourierCheckService courierCheckService;
 	
 	@Autowired
-	public CourierManager(CourierDao courierDao) {
+	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService) {
 		super();
 		this.courierDao = courierDao;
+		this.courierCheckService = courierCheckService;
 	}
 
 	@Override
@@ -35,7 +42,14 @@ public class CourierManager implements CourierService{
 
 	@Override
 	public Result add(Courier courier) {
-		this.courierDao.save(courier);
+		courierCheckService.existsByCourierEmail(courier.getCourierEmail());
+		courierCheckService.existsByCourierIdentityNumber(courier.getCourierIdentityNumber());
+		courierCheckService.validEmail(courier.getCourierEmail());
+		courierCheckService.validIdentityNumber(courier.getCourierIdentityNumber());
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService);
+		if(errors!=null) return errors;
+		else this.courierDao.save(courier);
+		
 		return new SuccessResult("courier added");
 	}
 
@@ -78,6 +92,12 @@ public class CourierManager implements CourierService{
 	public DataResult<List<Courier>> getByCourierAddress_City(String city) {
 		return new SuccessDataResult<List<Courier>>(this.courierDao.getByCourierAddress_City(city));
 
+	}
+
+	@Override
+	public DataResult<Courier> getByCourierId(int courierId) {
+		courierCheckService.existsCourierById(courierId);
+		return new SuccessDataResult<Courier>(this.courierDao.getByCourierId(courierId));
 	}
 
 }

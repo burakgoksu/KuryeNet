@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -58,7 +59,7 @@ public class Courier {
 	
 	@NotNull
 	@NotBlank
-	@Column(name="identity_number")
+	@Column(name="identity_number",unique = true)
 	private String courierIdentityNumber;
 	
 
@@ -71,7 +72,7 @@ public class Courier {
 	
 	@NotNull
 	@NotBlank
-	@Column(name="email")
+	@Column(name="email",unique = true)
 	private String courierEmail;
 	
 	

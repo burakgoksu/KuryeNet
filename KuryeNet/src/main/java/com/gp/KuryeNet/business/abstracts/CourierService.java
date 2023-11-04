@@ -17,6 +17,8 @@ public interface CourierService {
 	
 	Result add(Courier courier);
 	
+	DataResult<Courier> getByCourierId(int courierId);
+	
 	DataResult<Courier> getByCourierNameAndCourierSurname(String courierName, String courierSurname);
 	
 	DataResult<Courier> getByCourierIdentityNumber(String courierIdentityNumber);

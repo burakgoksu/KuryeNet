@@ -20,6 +20,8 @@ public interface OrderService {
 
 	Result add(Order order);
 	
+	DataResult<Order> getByOrderId(int orderId);
+	
 	DataResult<List<Order>> getByOrderDate(Date orderDate);
 	
 	DataResult<List<Order>> getByOrderType(String orderType);

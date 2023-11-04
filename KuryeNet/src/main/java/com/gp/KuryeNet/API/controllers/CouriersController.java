@@ -34,20 +34,20 @@ public class CouriersController {
 	}
 	
 	@GetMapping("/getall")
-	public DataResult<List<Courier>> getAll(){
-		return this.courierService.getAll();
+	public ResponseEntity<?> getAll(){
+		return Utils.getResponseEntity(this.courierService.getAll()); 
 		
 	}
 	
 	@GetMapping("/getallByPage")
-	public DataResult<List<Courier>> getAll(int pageNo,int pageSize){
-		return this.courierService.getAll(pageNo,pageSize);
+	public ResponseEntity<?> getAll(int pageNo,int pageSize){
+		return Utils.getResponseEntity(this.courierService.getAll(pageNo,pageSize));
 		
 	}
 	
 	@GetMapping("/getAllSortedByCourierName")
-	public DataResult<List<Courier>> getAllSortedByCourierName(){
-		return this.courierService.getAllSortedByCourierName();
+	public ResponseEntity<?> getAllSortedByCourierName(){
+		return Utils.getResponseEntity(this.courierService.getAllSortedByCourierName());
 		
 	}
 	
@@ -58,27 +58,32 @@ public class CouriersController {
 	}
 	
 	@GetMapping("/getByCourierNameAndSurname")
-	public DataResult<Courier> getByCourierNameAndCourierSurname(@RequestParam("name") String name, @RequestParam("surname") String surname){
-		return this.courierService.getByCourierNameAndCourierSurname(name, surname);
+	public ResponseEntity<?> getByCourierNameAndCourierSurname(@RequestParam("name") String name, @RequestParam("surname") String surname){
+		return Utils.getResponseEntity(this.courierService.getByCourierNameAndCourierSurname(name, surname));
 	}
 	
 	@GetMapping("/getByCourierIdentityNumber")
-	public DataResult<Courier> getByCourierIdentityNumber(@RequestParam String courierIdentityNumber){
-		return this.courierService.getByCourierIdentityNumber(courierIdentityNumber);
+	public ResponseEntity<?> getByCourierIdentityNumber(@RequestParam String courierIdentityNumber){
+		return Utils.getResponseEntity(this.courierService.getByCourierIdentityNumber(courierIdentityNumber));
 	}
 	
 	@GetMapping("/getByCourierEmail")
-	public DataResult<Courier> getByCourierEmail(@RequestParam String courierEmail){
-		return this.courierService.getByCourierEmail(courierEmail);
+	public ResponseEntity<?> getByCourierEmail(@RequestParam String courierEmail){
+		return Utils.getResponseEntity(this.courierService.getByCourierEmail(courierEmail));
 	}
 	
 	@GetMapping("/getByCourierCity")
-	public DataResult<List<Courier>> getByCourierAddress_City(@RequestParam String city){
-		return this.courierService.getByCourierAddress_City(city);
+	public ResponseEntity<?> getByCourierAddress_City(@RequestParam String city){
+		return Utils.getResponseEntity(this.courierService.getByCourierAddress_City(city));
 	}
 	
 	@GetMapping("/getCourierWithVehicleDetails")
-	public DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails(){
-		return this.courierService.getCourierWithVehicleDetails();
+	public ResponseEntity<?> getCourierWithVehicleDetails(){
+		return Utils.getResponseEntity(this.courierService.getCourierWithVehicleDetails());
+	}
+	
+	@GetMapping("/getById")
+	public ResponseEntity<?> getByCourierId(@Valid @RequestParam int addressId){
+		return Utils.getResponseEntity(this.courierService.getByCourierId(addressId)); 
 	}
 }

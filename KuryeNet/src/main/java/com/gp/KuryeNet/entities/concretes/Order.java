@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,7 +39,7 @@ public class Order {
 	private int orderId;
 	
 	@NotBlank
-	@Column(name="order_number")
+	@Column(name="order_number",unique = true)
 	private String orderNumber;
 	
 	//@Column(name="customer_id")
@@ -48,14 +51,18 @@ public class Order {
 	//private String dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="order_date")
 	private Date orderDate;
 
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="delivery_date")
 	private Date deliveryDate;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="order_type")
 	private String orderType;
 	
@@ -65,7 +72,9 @@ public class Order {
 	//@Column(name="provider_id")
 	//private int providerId;
 	
+	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(name="estimated_delivery_time")
 	private Date estimatedDeliveryTime;
 	
@@ -78,6 +87,7 @@ public class Order {
 	@Column(name="longitude")
 	private double longitude;
 	
+	@NotNull
 	@Column(name="order_status")
 	private int orderStatus;
 	

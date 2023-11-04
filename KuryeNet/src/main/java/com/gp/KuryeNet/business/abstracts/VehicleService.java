@@ -18,6 +18,8 @@ public interface VehicleService {
 
 	Result add(Vehicle vehicle);
 	
+	DataResult<Vehicle> getByVehicleId(int vehicleId);
+	
 	DataResult<Vehicle> getByVehiclePlate(String vehiclePlate);
 	
 	DataResult<List<Vehicle>> getByVehicleType(String vehicleType);

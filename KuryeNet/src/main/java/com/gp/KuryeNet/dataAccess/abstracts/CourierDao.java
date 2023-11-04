@@ -25,7 +25,13 @@ public interface CourierDao extends JpaRepository<Courier,Integer>{
 	
 	Courier getByCourierEmail(String email);
 	
+	Courier getByCourierId(int courierId);
+	
 	List<Courier> getByCourierAddress_City(String city);
+	
+	boolean existsByCourierIdentityNumber(String identityNumber);
+	
+	boolean existsByCourierEmail(String courierEmail);
 	
 	@Query("SELECT NEW com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto(c.courierId,c.courierName,c.courierSurname,v.vehicleType,v.vehicleBrand,v.vehiclePlate) FROM Vehicle v INNER JOIN v.couriers c" )
 	List<CourierWithVehicleDto> getCourierWithVehicleDetails();

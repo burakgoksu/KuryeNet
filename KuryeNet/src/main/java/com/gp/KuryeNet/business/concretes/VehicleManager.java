@@ -9,22 +9,29 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.VehicleService;
+import com.gp.KuryeNet.business.abstracts.check.VehicleCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
 import com.gp.KuryeNet.dataAccess.abstracts.VehicleDao;
 import com.gp.KuryeNet.entities.concretes.Vehicle;
 
+
 @Service
 public class VehicleManager implements VehicleService{
 	
 	private VehicleDao vehicleDao;
+	private VehicleCheckService vehicleCheckService;
 
 	@Autowired
-	public VehicleManager(VehicleDao vehicleDao) {
+	public VehicleManager(VehicleDao vehicleDao,VehicleCheckService vehicleCheckService) {
 		super();
 		this.vehicleDao = vehicleDao;
+		this.vehicleCheckService = vehicleCheckService;
 	}
 
 	
@@ -95,8 +102,20 @@ public class VehicleManager implements VehicleService{
 
 	@Override
 	public Result add(Vehicle vehicle) {
-		this.vehicleDao.save(vehicle);
+		vehicleCheckService.validVehicleEmission(vehicle.getVehicleEmission());
+		vehicleCheckService.validVehiclePlate(vehicle.getVehiclePlate());
+		vehicleCheckService.existsByVehiclePlate(vehicle.getVehiclePlate());
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(vehicleCheckService);
+		if(errors!=null) return errors;
+		else this.vehicleDao.save(vehicle);
 		return new SuccessResult("vehicle added");
+	}
+
+
+	@Override
+	public DataResult<Vehicle> getByVehicleId(int vehicleId) {
+		vehicleCheckService.existsVehicleById(vehicleId);
+		return new SuccessDataResult<Vehicle>(this.vehicleDao.getByVehicleId(vehicleId));
 	}
 
 }

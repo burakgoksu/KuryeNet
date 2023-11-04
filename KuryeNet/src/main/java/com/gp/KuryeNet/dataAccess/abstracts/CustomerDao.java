@@ -25,4 +25,6 @@ public interface CustomerDao extends JpaRepository<Customer,Integer>{
 	Customer getByCustomerAddress_AddressId(int addressId);
 	
 	List<Customer> getByCustomerAddress_City(String city);
+	
+	boolean existsByCustomerEmail(String customerEmail);
 }

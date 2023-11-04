@@ -57,7 +57,7 @@ public class AddressManager implements AddressService{
 		addressCheckService.validPhoneNumber(address.getPhoneNumber());
 		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(addressCheckService);
 	    if (errors != null) return errors;
-		
+	    else this.addressDao.save(address);
 		return new SuccessResult(Msg.SAVED.get());
 	}
 

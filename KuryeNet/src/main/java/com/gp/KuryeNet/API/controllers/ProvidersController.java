@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,10 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gp.KuryeNet.business.abstracts.ProviderService;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
@@ -36,62 +41,68 @@ public class ProvidersController {
 	}
 	
 	@GetMapping("/getall")
-	public DataResult<List<Provider>> getAll(){
-		return this.providerService.getAll();
+	public ResponseEntity<?> getAll(){
+		return Utils.getResponseEntity(this.providerService.getAll());
 		
 	}
 	
 	@GetMapping("/getallByPage")
-	public DataResult<List<Provider>> getAll(int pageNo,int pageSize){
-		return this.providerService.getAll(pageNo,pageSize);
+	public ResponseEntity<?> getAll(@RequestParam int pageNo,@RequestParam int pageSize){
+		return Utils.getResponseEntity(this.providerService.getAll(pageNo,pageSize));
 		
 	}
 	
 	@GetMapping("/getAllSortedByProviderName")
-	public DataResult<List<Provider>> getAllSortedByProviderName(){
-		return this.providerService.getAllSortedByProviderName();
+	public ResponseEntity<?> getAllSortedByProviderName(){
+		return Utils.getResponseEntity(this.providerService.getAllSortedByProviderName());
 		
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody Provider provider){
-		return this.providerService.add(provider);
+	public ResponseEntity<?> add(@Valid @RequestBody Provider provider){
+		return Utils.getResponseEntity(this.providerService.add(provider));
 		
 	}
 	
 	@GetMapping("/getByProviderName")
-	public DataResult<Provider> getByProviderName(String providerName){
-		return this.providerService.getByProviderName(providerName);
+	public ResponseEntity<?> getByProviderName(@RequestParam String providerName){
+		return Utils.getResponseEntity(this.providerService.getByProviderName(providerName));
 	}
 	
 	@GetMapping("/getByProviderType")
-	public DataResult<List<Provider>> getByProviderType(String providerType){
-		return this.providerService.getByProviderType(providerType);
+	public ResponseEntity<?> getByProviderType(@RequestParam String providerType){
+		return Utils.getResponseEntity(this.providerService.getByProviderType(providerType));
 	}
 	
 	@GetMapping("/getByAddressId")
-	public DataResult<Provider> getByAddress_AddressId(int addressId){
-		return this.providerService.getByProviderAddress_AddressId(addressId);
+	public ResponseEntity<?> getByAddress_AddressId(@RequestParam int addressId){
+		return Utils.getResponseEntity(this.providerService.getByProviderAddress_AddressId(addressId));
 	}
 	
 	@GetMapping("/getByProviderCity")
-	public DataResult<List<Provider>> getByProviderAddress_City(String city){
-		return this.providerService.getByProviderAddress_City(city);
+	public ResponseEntity<?> getByProviderAddress_City(@RequestParam String city){
+		return Utils.getResponseEntity(this.providerService.getByProviderAddress_City(city));
 	}
 	
 	@GetMapping("/getByProviderDistrict")
-	public DataResult<List<Provider>> getByProviderAddress_District(String district){
-		return this.providerService.getByProviderAddress_District(district);
+	public ResponseEntity<?> getByProviderAddress_District(@RequestParam String district){
+		return Utils.getResponseEntity(this.providerService.getByProviderAddress_District(district));
 	}
 	
 	@GetMapping("/getByProviderCityAndDistrict")
-	public DataResult<List<Provider>> getByProviderAddress_CityAndProviderAddress_District(String city,String district){
-		return this.providerService.getByProviderAddress_CityAndProviderAddress_District(city,district);
+	public ResponseEntity<?> getByProviderAddress_CityAndProviderAddress_District(@RequestParam String city,@RequestParam String district){
+		return Utils.getResponseEntity(this.providerService.getByProviderAddress_CityAndProviderAddress_District(city,district));
 	}
 	
-
+	@GetMapping("/getByProviderId")
+	public ResponseEntity<?> getByProviderId(@RequestParam int providerId){
+		return Utils.getResponseEntity(this.providerService.getByProviderId(providerId));
+	}
 	
+	@GetMapping("/getByProviderMersisNo")
+	public ResponseEntity<?> getByProviderMersisNo(@RequestParam String providerMersisNo){
+		return Utils.getResponseEntity(this.providerService.getByProviderMersisNo(providerMersisNo));
+	}
 	
-
 	
 }

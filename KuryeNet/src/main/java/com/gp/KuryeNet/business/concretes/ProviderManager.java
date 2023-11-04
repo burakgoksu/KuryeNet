@@ -9,7 +9,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.ProviderService;
+import com.gp.KuryeNet.business.abstracts.check.ProviderCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -21,11 +25,13 @@ import com.gp.KuryeNet.entities.concretes.Provider;
 public class ProviderManager implements ProviderService{
 	
 	private ProviderDao providerDao;
+	private ProviderCheckService providerCheckService;
 	
 	@Autowired
-	public ProviderManager(ProviderDao providerDao) {
+	public ProviderManager(ProviderDao providerDao,ProviderCheckService providerCheckService) {
 		super();
 		this.providerDao = providerDao;
+		this.providerCheckService = providerCheckService;
 	}
 
 	@Override
@@ -82,8 +88,23 @@ public class ProviderManager implements ProviderService{
 
 	@Override
 	public Result add(Provider provider) {
-		this.providerDao.save(provider);
+		providerCheckService.existsByProviderMersisNo(provider.getProviderMersisNo());
+		providerCheckService.validProviderMersisNo(provider.getProviderMersisNo());
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(providerCheckService);
+		if(errors!=null) return errors;
+		else this.providerDao.save(provider);
 		return new SuccessResult("Provider added");
+	}
+
+	@Override
+	public DataResult<Provider> getByProviderId(int providerId) {
+		providerCheckService.existsProviderById(providerId);
+		return new SuccessDataResult<Provider>(this.providerDao.getByProviderId(providerId));
+	}
+
+	@Override
+	public DataResult<Provider> getByProviderMersisNo(String providerMersisNo) {
+		return new SuccessDataResult<Provider>(this.providerDao.getByProviderMersisNo(providerMersisNo));
 	}
 
 }

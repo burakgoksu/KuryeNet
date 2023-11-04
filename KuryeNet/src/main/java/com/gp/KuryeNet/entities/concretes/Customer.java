@@ -51,7 +51,7 @@ public class Customer {
 	
 	@NotNull
 	@NotBlank
-	@Column(name="email")
+	@Column(name="email",unique = true)
 	private String customerEmail;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Istanbul")
@@ -73,14 +73,11 @@ public class Customer {
 	@JoinColumn(name="address_id")
 	private Address customerAddress; 	
 	
-//	@ManyToMany()
-//	@JoinColumn(name="address_id")
-//	private List<Address> customerAddresses;
-		
-//    @ManyToMany
-//    @JoinTable(
-//        name = "customer_address", // Aracı tablonun adı
-//        joinColumns = @JoinColumn(name = "customer_id"),
-//        inverseJoinColumns = @JoinColumn(name = "address_id"))
-//    private List<Address> customerAddresses;
+//	@ManyToMany
+//    @JoinTable(name = "cvs_skills",
+//            joinColumns = {@JoinColumn(name = "cv_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "candidate_skill_id", referencedColumnName = "id")})
+//    @JsonIgnoreProperties(value = {"candidate"})
+//    @ToString.Exclude
+//    private List<CandidateSkill> candidateSkills;
 }

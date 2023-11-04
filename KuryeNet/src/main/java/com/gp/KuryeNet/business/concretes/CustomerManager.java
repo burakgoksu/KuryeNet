@@ -9,7 +9,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.CustomerService;
+import com.gp.KuryeNet.business.abstracts.check.CustomerCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -20,11 +24,13 @@ import com.gp.KuryeNet.entities.concretes.Customer;
 public class CustomerManager implements CustomerService{
 	
 	private CustomerDao customerDao;
+	private CustomerCheckService customerCheckService;
 
 	@Autowired
-	public CustomerManager(CustomerDao customerDao) {
+	public CustomerManager(CustomerDao customerDao,CustomerCheckService customerCheckService) {
 		super();
 		this.customerDao = customerDao;
+		this.customerCheckService = customerCheckService;
 	}
 
 	@Override
@@ -46,12 +52,18 @@ public class CustomerManager implements CustomerService{
 
 	@Override
 	public Result add(Customer customer) {
-		this.customerDao.save(customer);
+		customerCheckService.existsByCustomerEmail(customer.getCustomerEmail());
+		customerCheckService.validEmail(customer.getCustomerEmail());
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(customerCheckService);
+		if(errors!=null) return errors;
+		else this.customerDao.save(customer);
+		
 		return new SuccessResult("customer added");
 	}
 
 	@Override
 	public DataResult<Customer> getByCustomerId(int customerId) {
+		customerCheckService.existsCustomerById(customerId);
 		return new SuccessDataResult<Customer>(this.customerDao.getByCustomerId(customerId));
 	}
 

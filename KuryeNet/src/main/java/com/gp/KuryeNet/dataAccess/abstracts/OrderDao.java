@@ -28,6 +28,10 @@ public interface OrderDao extends JpaRepository<Order,Integer>{
 	
 	Order getByOrderNumber(String orderNumber);
 	
+	Order getByOrderId(int orderId);
+	
+	boolean existsByOrderNumber(String orderNumber);
+	
 	List<Order> getByOrderDateAndOrderStatus(Date orderDate, int OrderStatus);
 	
 	List<Order> getByCourier_CourierIdIn(List<Integer> couriers);

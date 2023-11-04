@@ -20,6 +20,12 @@ public interface ProviderDao extends JpaRepository<Provider,Integer>{
 	
 	Provider getByProviderAddress_AddressId(int addressId);
 	
+	Provider getByProviderId(int providerId);
+	
+	Provider getByProviderMersisNo(String providerMersisNo);
+	
+	boolean existsByProviderMersisNo(String providerMersisNo);
+	
 	List<Provider> getByProviderAddress_City(String addressCity);
 	
 	List<Provider> getByProviderAddress_District(String addressDistrict);

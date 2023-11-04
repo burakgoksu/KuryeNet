@@ -18,6 +18,10 @@ public interface ProviderService {
 	
 	DataResult<Provider> getByProviderName(String providerName);
 	
+	DataResult<Provider> getByProviderId(int providerId);
+	
+	DataResult<Provider> getByProviderMersisNo(String providerMersisNo);
+	
 	DataResult<List<Provider>> getByProviderType(String providerType);
 	
 	DataResult<Provider> getByProviderAddress_AddressId(int addressId);

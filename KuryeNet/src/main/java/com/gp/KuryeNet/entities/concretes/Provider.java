@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -31,9 +33,12 @@ public class Provider {
 //	@Column(name="address_id")
 //	private int addressId;
 	
+	@NotNull
+    @Pattern(regexp = "^(restoran|market|kafe/bistro)$")
 	@Column(name="provider_type")
 	private String providerType;
 	
+	@NotNull
 	@Column(name="provider_name")
 	private String providerName;
 	
@@ -42,6 +47,9 @@ public class Provider {
 	
 	@Column(name="longitude")
 	private double providerLongitude;
+	
+	@Column(name="mersis_no")
+	private String providerMersisNo;
 	
 	@ManyToOne
 	@JoinColumn(name="address_id")

@@ -23,8 +23,6 @@ public interface AddressDao extends JpaRepository<Address,Integer>{
 	
 	Address getByAddressId(int id);
 	
-	boolean existsByAddressId(String nationalityId);
-	
-	boolean existsByPhoneNumber(String nationalityId);
+	boolean existsByPhoneNumber(String phoneNumber);
 	
 }

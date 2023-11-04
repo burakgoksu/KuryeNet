@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -27,21 +29,27 @@ public class Vehicle {
 	@Column(name="vehicle_id")
 	private int vehicleId;
 	
+	@NotNull
 	@Column(name="vehicle_year")
 	private int vehicleYear;
 	
+	@NotNull
 	@Column(name="vehicle_type")
 	private String vehicleType;
 	
+	@NotNull
 	@Column(name="vehicle_brand")
 	private String vehicleBrand;
 	
+	@NotNull
 	@Column(name="vehicle_model")
 	private String vehicleModel;
 	
+	@NotNull
 	@Column(name="vehicle_emission")
 	private String vehicleEmission;
 	
+	@NotNull
 	@Column(name="vehicle_plate")
 	private String vehiclePlate;
 	

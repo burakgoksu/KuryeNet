@@ -76,7 +76,7 @@ public class Address {
 	
 	@NotNull
 	@NotBlank
-	@Column(name="phone_number")
+	@Column(name="phone_number",unique = true)
 	private String phoneNumber;
 	
 	@OneToMany(mappedBy="orderAddress")

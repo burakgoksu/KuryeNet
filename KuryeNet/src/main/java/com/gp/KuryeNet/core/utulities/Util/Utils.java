@@ -59,12 +59,16 @@ public class Utils {
 
 
         public static final String NAT_ID_REGEXP = "\\d{11}";
+        public static final String ID_NUMBER_REGEXP = "^[1-9]{1}[0-9]{10}$";
+        public static final String PROVIDER_MERSIS_NO_REGEXP = "^\\d{16}$";
         public static final String LANG_LVL_REGEXP = "[ABC][12]";
         public static final String EMAIL_REGEXP = "^\\w+(\\.\\w+)*@\\p{javaLowerCase}{2,12}+(\\.\\p{javaLowerCase}{2,6})+$";
         public static final String WEBSITE_REGEXP = "^(w{3}\\.)?[^.]+(\\.\\p{javaLowerCase}{2,12})+$";
         public static final String PHONE_NUM_REGEXP = "^((\\+?\\d{1,3})?0?[\\s-]?)?\\(?0?\\d{3}\\)?[\\s-]?\\d{3}[\\s-]?\\d{2}[\\s-]?\\d{2}$";
         public static final String DATE_REGEXP = "^\\d{4}-\\d{2}-\\d{2}$";
-
+        public static final String VEHICLE_EMISSION_REGEXP = "^(gaz|benzin|dizel|elektrik)$";
+        public static final String VEHICLE_TYPE_REGEXP = "^(motorsiklet|araba)$";
+        public static final String VEHICLE_PLATE_REGEXP = "^[1-8]\\d[A-Z]{2,3}\\d{3,4}$";
         public static final String LOCALHOST_3000 = "http://localhost:3000";
         public static final String HEROKU_APP = "https://javareactcamp-hrms-frontend.herokuapp.com";
 
