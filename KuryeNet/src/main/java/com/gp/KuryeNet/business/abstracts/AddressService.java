@@ -16,6 +16,8 @@ public interface AddressService {
 
 	Result add(Address address);
 	
+	DataResult<Address> getByAddressId(int addressId);
+	
 	DataResult<List<Address>> getByAddressTitle(String addressTitle);
 	
 	DataResult<List<Address>> getByPhoneNumber(String phoneNumber);

@@ -3,6 +3,8 @@ package com.gp.KuryeNet.dataAccess.abstracts;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
 @Repository
 @Component
+@Transactional
 public interface CourierDao extends JpaRepository<Courier,Integer>{
 	
 	Courier getByCourierNameAndCourierSurname(String courierName, String courierSurname);

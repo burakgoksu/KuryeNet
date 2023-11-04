@@ -1,6 +1,7 @@
 package com.gp.KuryeNet.API.controllers;
 
 import com.gp.KuryeNet.business.abstracts.OrderService;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Address;
@@ -11,7 +12,10 @@ import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,8 +54,8 @@ public class OrdersController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody Order order){
-		return this.orderService.add(order);
+	public ResponseEntity<?> add(@Valid @RequestBody Order order){
+		return Utils.getResponseEntity(this.orderService.add(order));
 		
 	}
 	

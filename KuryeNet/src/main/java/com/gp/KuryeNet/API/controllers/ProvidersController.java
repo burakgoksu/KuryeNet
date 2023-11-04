@@ -1,16 +1,24 @@
 package com.gp.KuryeNet.API.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gp.KuryeNet.business.abstracts.ProviderService;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.concretes.Provider;
@@ -80,6 +88,8 @@ public class ProvidersController {
 	public DataResult<List<Provider>> getByProviderAddress_CityAndProviderAddress_District(String city,String district){
 		return this.providerService.getByProviderAddress_CityAndProviderAddress_District(city,district);
 	}
+	
+
 	
 	
 

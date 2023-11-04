@@ -2,15 +2,20 @@ package com.gp.KuryeNet.API.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gp.KuryeNet.business.abstracts.CourierService;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
@@ -47,8 +52,8 @@ public class CouriersController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody Courier courier){
-		return this.courierService.add(courier);
+	public ResponseEntity<?> add(@Valid @RequestBody Courier courier){
+		return Utils.getResponseEntity(this.courierService.add(courier)) ;
 		
 	}
 	

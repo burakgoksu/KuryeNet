@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,6 +35,7 @@ public class Order {
 	@Column(name = "order_id")
 	private int orderId;
 	
+	@NotBlank
 	@Column(name="order_number")
 	private String orderNumber;
 	

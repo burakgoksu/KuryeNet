@@ -11,7 +11,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -34,15 +39,24 @@ public class Customer {
 //	@Column(name="address_id")
 //	private int addressId;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="name")
 	private String customerName;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="surname")
 	private String customerSurname;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="email")
 	private String customerEmail;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Istanbul")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull
 	@Column(name="birthday")
 	private Date customerBirthday;
 	

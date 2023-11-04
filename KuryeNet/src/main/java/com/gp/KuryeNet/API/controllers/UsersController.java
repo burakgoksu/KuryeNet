@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gp.KuryeNet.business.abstracts.UserService;
 import com.gp.KuryeNet.core.entities.User;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 
@@ -38,28 +39,27 @@ public class UsersController {
 
 	@PostMapping("/add")
 	public ResponseEntity<?> add(@Valid @RequestBody User user) {
-		return ResponseEntity.ok(this.userService.add(user));
+		return Utils.getResponseEntity(this.userService.add(user));
 	}
 	
 	@GetMapping("/getByEmail")
-	public DataResult<User> getByEmail(@RequestParam String email) {
-		return this.userService.getByEmail(email);
+	public ResponseEntity<?> getByEmail(@Valid @RequestParam String email) {
+		return Utils.getResponseEntity(this.userService.getByEmail(email));
 	}
 	
 	
-	
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorDataResult<Object> handleValidationException(MethodArgumentNotValidException exceptions){
-		Map<String,String> validationErrors = new HashMap<String, String>();
-		
-		for(FieldError fieldError : exceptions.getBindingResult().getFieldErrors()) {
-			validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
-		}
-		ErrorDataResult<Object> errors = new ErrorDataResult<Object>(validationErrors,"Validation Errors");
-		return errors;
-		
-	}
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	public ErrorDataResult<Object> handleValidationException(MethodArgumentNotValidException exceptions){
+//		Map<String,String> validationErrors = new HashMap<String, String>();
+//		
+//		for(FieldError fieldError : exceptions.getBindingResult().getFieldErrors()) {
+//			validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
+//		}
+//		ErrorDataResult<Object> errors = new ErrorDataResult<Object>(validationErrors,"Validation Errors");
+//		return errors;
+//		
+//	}
 	
 }
  

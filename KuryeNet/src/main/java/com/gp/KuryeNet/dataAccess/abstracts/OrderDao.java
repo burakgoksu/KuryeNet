@@ -3,6 +3,7 @@ package com.gp.KuryeNet.dataAccess.abstracts;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,7 @@ import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 
 @Repository
 @Component
+@Transactional
 public interface OrderDao extends JpaRepository<Order,Integer>{
 	
 	List<Order> getByOrderDate(Date orderDate);

@@ -14,6 +14,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,21 +36,32 @@ import lombok.ToString;
 public class Address {
 	
 	@Id
+	@NotNull
 	@Column(name="address_id")
 	private int addressId;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="address")
 	private String address;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="addres_title")
 	private String addressTitle;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="city")
 	private String city;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="district")
 	private String district;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="street")
 	private String street;	
 	
@@ -61,6 +74,8 @@ public class Address {
 	@Column(name="apartment_number")
 	private String apartmentNumber;
 	
+	@NotNull
+	@NotBlank
 	@Column(name="phone_number")
 	private String phoneNumber;
 	

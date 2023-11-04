@@ -9,7 +9,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.AddressService;
+import com.gp.KuryeNet.business.abstracts.check.AddressCheckService;
+import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Msg;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -20,11 +25,13 @@ import com.gp.KuryeNet.entities.concretes.Address;
 public class AddressManager implements AddressService{
 	
 	private AddressDao addressDao;
+	private AddressCheckService addressCheckService;
 
 	@Autowired
-	public AddressManager(AddressDao addressDao) {
+	public AddressManager(AddressDao addressDao,AddressCheckService addressCheckService) {
 		super();
 		this.addressDao = addressDao;
+		this.addressCheckService = addressCheckService;
 	}
 	
 	@Override
@@ -46,8 +53,12 @@ public class AddressManager implements AddressService{
 
 	@Override
 	public Result add(Address address) {
-		this.addressDao.save(address);
-		return new SuccessResult("Address added");
+		addressCheckService.existsPhoneNumber(address.getPhoneNumber());
+		addressCheckService.validPhoneNumber(address.getPhoneNumber());
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(addressCheckService);
+	    if (errors != null) return errors;
+		
+		return new SuccessResult(Msg.SAVED.get());
 	}
 
 	@Override
@@ -56,15 +67,20 @@ public class AddressManager implements AddressService{
 	}
 
 	@Override
-	public DataResult<List<Address>> getByPhoneNumber(String phoneNumber) {
+	public DataResult<List<Address>> getByPhoneNumber(String phoneNumber) {    
 		return new SuccessDataResult<List<Address>>(this.addressDao.getByPhoneNumber(phoneNumber));
-
 	}
 
 	@Override
 	public DataResult<List<Address>> getByCity(String city) {
 		return new SuccessDataResult<List<Address>>(this.addressDao.getByCity(city));
 
+	}
+
+	@Override
+	public DataResult<Address> getByAddressId(int addressId) {
+		addressCheckService.existsAddressById(addressId);
+		return new SuccessDataResult<Address>(this.addressDao.getByAddressId(addressId));
 	}
 
 }
