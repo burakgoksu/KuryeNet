@@ -105,7 +105,7 @@ public class OrdersController {
 	}
 	
 	@GetMapping("/getByOrderId")
-	public ResponseEntity<?> getByOrderId(int orderId){
+	public ResponseEntity<?> getByOrderId(@RequestParam int orderId){
 		return Utils.getResponseEntity(this.orderService.getByOrderId(orderId));
 		
 	}

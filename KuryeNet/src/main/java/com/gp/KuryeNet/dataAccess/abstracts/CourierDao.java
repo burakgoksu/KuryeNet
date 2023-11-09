@@ -27,6 +27,9 @@ public interface CourierDao extends JpaRepository<Courier,Integer>{
 	
 	Courier getByCourierId(int courierId);
 	
+	@Query("SELECT o.courier.courierId FROM Order o WHERE orderId=:orderId")
+	int getByCourierIdWithOrderId(int orderId);
+	
 	List<Courier> getByCourierAddress_City(String city);
 	
 	boolean existsByCourierIdentityNumber(String identityNumber);
@@ -35,5 +38,7 @@ public interface CourierDao extends JpaRepository<Courier,Integer>{
 	
 	@Query("SELECT NEW com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto(c.courierId,c.courierName,c.courierSurname,v.vehicleType,v.vehicleBrand,v.vehiclePlate) FROM Vehicle v INNER JOIN v.couriers c" )
 	List<CourierWithVehicleDto> getCourierWithVehicleDetails();
+	
+	
 	
 }

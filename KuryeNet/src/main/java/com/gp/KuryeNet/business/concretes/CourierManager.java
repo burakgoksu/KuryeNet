@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.CourierService;
 import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
+import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
 import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
@@ -18,8 +19,11 @@ import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
 import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
+import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
+import com.gp.KuryeNet.entities.concretes.Order;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
+import com.gp.KuryeNet.entities.dtos.StartOrderWithCourierDto;
 
 
 @Service
@@ -27,12 +31,16 @@ public class CourierManager implements CourierService{
 	
 	private CourierDao courierDao;
 	private CourierCheckService courierCheckService;
+	private OrderDao orderDao;
+	private OrderCheckService orderCheckService;
 	
 	@Autowired
-	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService) {
+	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService) {
 		super();
 		this.courierDao = courierDao;
 		this.courierCheckService = courierCheckService;
+		this.orderDao = orderDao;
+		this.orderCheckService = orderCheckService;
 	}
 
 	@Override
@@ -99,5 +107,48 @@ public class CourierManager implements CourierService{
 		courierCheckService.existsCourierById(courierId);
 		return new SuccessDataResult<Courier>(this.courierDao.getByCourierId(courierId));
 	}
+
+	@Override
+	public DataResult<Integer> getByCourierIdWithOrderId(int orderId) {
+		return new SuccessDataResult<Integer>(this.courierDao.getByCourierIdWithOrderId(orderId));
+	}
+	
+	@Override
+	public Result startOrder(int orderId, int courierId) {
+		orderCheckService.existsOrderById(orderId);
+		orderCheckService.availableOrder(orderId);
+		courierCheckService.availableCourier(courierId);
+		courierCheckService.existsCourierById(courierId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
+		if(errors!=null) return errors;
+		
+		Order order = this.orderDao.getByOrderId(orderId);
+		Courier courier = this.courierDao.getByCourierId(courierId);
+		order.setCourier(courier);
+		courier.setCourierStatus(200);
+		order.setOrderStatus(200);
+		orderDao.save(order);
+		courierDao.save(courier);
+		return new SuccessResult("Order start successfully");
+	}
+	
+	@Override
+	public Result endOrder(int orderId, int courierId) {
+		orderCheckService.existsOrderById(orderId);
+		orderCheckService.distributionOrder(orderId);
+		courierCheckService.distributionCourier(courierId);
+		courierCheckService.existsCourierById(courierId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
+		if(errors!=null) return errors;
+		
+		Order order = this.orderDao.getByOrderId(orderId);
+		Courier courier = this.courierDao.getByCourierId(courierId);
+		courier.setCourierStatus(100);
+		order.setOrderStatus(300);
+		orderDao.save(order);
+		courierDao.save(courier);
+		return new SuccessResult("Order end successfully");
+	}
+
 
 }

@@ -54,7 +54,9 @@ public enum Msg {
     IMG_VALIDATION_ERR("An error has occurred while validating image"),
     FILE_TOO_LARGE("File too large"),
     MALFORMED_JSON_REQUEST("Malformed JSON request"),
-    LOGIN_FAIL("Please check your email and password");
+    LOGIN_FAIL("Please check your email and password"),
+	IS_IN_DISTRIBUTION("is in distribution"),
+	IS_NOT_IN_DISTRIBUTION("is not in distribution");
 
     private final String MSG;
 

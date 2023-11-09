@@ -36,5 +36,19 @@ public class OrderCheckManager extends BaseCheckManager implements OrderCheckSer
 			errors.put("orderNumber", Msg.IS_IN_USE.get("OrderNumber"));
 		
 	}
+	
+	@Override
+	public void availableOrder(int orderId) {
+		if(orderDao.getByOrderId(orderId).getOrderStatus() != 100)
+			errors.put("orderId", Msg.IS_IN_DISTRIBUTION.get());
+		
+	}
+	
+	@Override
+	public void distributionOrder(int orderId) {
+		if(orderDao.getByOrderId(orderId).getOrderStatus() != 200)
+			errors.put("courierId", Msg.IS_NOT_IN_DISTRIBUTION.get());
+		
+	}
 
 }

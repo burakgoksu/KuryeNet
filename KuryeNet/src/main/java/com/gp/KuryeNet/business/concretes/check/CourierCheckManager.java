@@ -8,6 +8,7 @@ import com.gp.KuryeNet.core.utulities.Util.CheckUtils;
 import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.exception.exceptions.EntityNotExistsException;
 import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
+import com.gp.KuryeNet.entities.concretes.Courier;
 
 import lombok.SneakyThrows;
 
@@ -52,6 +53,20 @@ public class CourierCheckManager extends BaseCheckManager implements CourierChec
 	public void validIdentityNumber(String courierIdentityNumber) {
 		if(CheckUtils.invalidIdentityNumber(courierIdentityNumber))
 			errors.put("courierIdentityNumber", Msg.IS_NOT_VALID.get());
+		
+	}
+	
+	@Override
+	public void availableCourier(int courierId) {
+		if(courierDao.getByCourierId(courierId).getCourierStatus() != 100)
+			errors.put("courierId", Msg.IS_IN_DISTRIBUTION.get());
+		
+	}
+	
+	@Override
+	public void distributionCourier(int courierId) {
+		if(courierDao.getByCourierId(courierId).getCourierStatus() != 200)
+			errors.put("courierId", Msg.IS_NOT_IN_DISTRIBUTION.get());
 		
 	}
 

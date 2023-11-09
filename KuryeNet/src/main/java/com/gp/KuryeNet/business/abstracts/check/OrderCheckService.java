@@ -9,5 +9,9 @@ public interface OrderCheckService extends BaseCheckService{
     void existsOrderById(int customerId);
     
     void existsByOrderNumber(String orderNumber);
+    
+    void availableOrder(int orderId);
+    
+    void distributionOrder(int orderId);
 }
 

@@ -86,4 +86,21 @@ public class CouriersController {
 	public ResponseEntity<?> getByCourierId(@Valid @RequestParam int addressId){
 		return Utils.getResponseEntity(this.courierService.getByCourierId(addressId)); 
 	}
+	
+	@GetMapping("/getByCourierIdWithOrderId")
+	public ResponseEntity<?> getByCourierIdWithOrderId(@Valid @RequestParam int orderId){
+		return Utils.getResponseEntity(this.courierService.getByCourierIdWithOrderId(orderId)); 
+	}
+	
+	@PostMapping("/startOrder")
+	public ResponseEntity<?> startOrder(@Valid @RequestParam int orderId, @RequestParam int courierId){
+		return Utils.getResponseEntity(this.courierService.startOrder(orderId,courierId));
+		
+	}
+	
+	@PostMapping("/endOrder")
+	public ResponseEntity<?> endOrder(@Valid @RequestParam int orderId, @RequestParam int courierId){
+		return Utils.getResponseEntity(this.courierService.endOrder(orderId,courierId));
+		
+	}
 }

@@ -6,6 +6,7 @@ import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
+import com.gp.KuryeNet.entities.dtos.StartOrderWithCourierDto;
 
 public interface CourierService {
 	
@@ -17,6 +18,12 @@ public interface CourierService {
 	
 	Result add(Courier courier);
 	
+	Result startOrder(int orderId, int courierId);
+	
+	Result endOrder(int orderId, int courierId);
+		
+	DataResult<Integer> getByCourierIdWithOrderId(int orderId);
+			
 	DataResult<Courier> getByCourierId(int courierId);
 	
 	DataResult<Courier> getByCourierNameAndCourierSurname(String courierName, String courierSurname);

@@ -15,5 +15,9 @@ public interface CourierCheckService extends BaseCheckService{
     void validEmail(String courierEmail);
     
     void validIdentityNumber(String courierIdentityNumber);
+    
+    void availableCourier(int courierId);
+    
+    void distributionCourier(int courierId);
 
 }

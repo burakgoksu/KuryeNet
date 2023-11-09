@@ -18,8 +18,10 @@ import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
+import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Address;
+import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.concretes.Order;
 import com.gp.KuryeNet.entities.dtos.OrderWithAddressDto;
 import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
@@ -28,12 +30,14 @@ import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 public class OrderManager implements OrderService{
 	private OrderDao orderDao;
 	private OrderCheckService orderCheckService;
+	private CourierDao courierDao;
 
 	@Autowired
-	public OrderManager(OrderDao orderDao,OrderCheckService orderCheckService) {
+	public OrderManager(OrderDao orderDao,OrderCheckService orderCheckService,CourierDao courierDao) {
 		super();
 		this.orderDao = orderDao;
 		this.orderCheckService = orderCheckService;
+		this.courierDao = courierDao;
 	}
 
 
