@@ -150,5 +150,18 @@ public class CourierManager implements CourierService{
 		return new SuccessResult("Order end successfully");
 	}
 
+	@Override
+	public Result updateCourierCoordinates(int courierId, double latitude, double longitude) {
+		courierCheckService.existsCourierById(courierId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService);
+		if(errors!=null) return errors;
+		
+		Courier courier = this.courierDao.getByCourierId(courierId);
+		courier.setCourierLatitude(latitude);
+		courier.setCourierLongitude(longitude);
+		courierDao.save(courier);
+		return new SuccessResult("Courier coordinates are changed successfully");
+	}
+
 
 }

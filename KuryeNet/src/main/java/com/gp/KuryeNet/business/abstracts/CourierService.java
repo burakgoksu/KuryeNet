@@ -18,6 +18,8 @@ public interface CourierService {
 	
 	Result add(Courier courier);
 	
+	Result updateCourierCoordinates(int courierId, double latitude,double longitude);
+	
 	Result startOrder(int orderId, int courierId);
 	
 	Result endOrder(int orderId, int courierId);
