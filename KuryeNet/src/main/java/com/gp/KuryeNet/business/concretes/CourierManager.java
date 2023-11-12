@@ -114,16 +114,16 @@ public class CourierManager implements CourierService{
 	}
 	
 	@Override
-	public Result startOrder(int orderId, int courierId) {
+	public Result startOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.availableOrder(orderId);
-		courierCheckService.availableCourier(courierId);
-		courierCheckService.existsCourierById(courierId);
+		courierCheckService.availableCourier(courierEmail);
+		//courierCheckService.existsCourierById(courierEmail);
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
 		if(errors!=null) return errors;
 		
 		Order order = this.orderDao.getByOrderId(orderId);
-		Courier courier = this.courierDao.getByCourierId(courierId);
+		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
 		order.setCourier(courier);
 		courier.setCourierStatus(200);
 		order.setOrderStatus(200);
@@ -133,16 +133,16 @@ public class CourierManager implements CourierService{
 	}
 	
 	@Override
-	public Result endOrder(int orderId, int courierId) {
+	public Result endOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.distributionOrder(orderId);
-		courierCheckService.distributionCourier(courierId);
-		courierCheckService.existsCourierById(courierId);
+		courierCheckService.distributionCourier(courierEmail);
+		//courierCheckService.existsCourierById(courierEmail);
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
 		if(errors!=null) return errors;
 		
 		Order order = this.orderDao.getByOrderId(orderId);
-		Courier courier = this.courierDao.getByCourierId(courierId);
+		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
 		courier.setCourierStatus(100);
 		order.setOrderStatus(300);
 		orderDao.save(order);
@@ -151,12 +151,9 @@ public class CourierManager implements CourierService{
 	}
 
 	@Override
-	public Result updateCourierCoordinates(int courierId, double latitude, double longitude) {
-		courierCheckService.existsCourierById(courierId);
-		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService);
-		if(errors!=null) return errors;
+	public Result updateCourierCoordinates(String courierEmail, double latitude, double longitude) {
 		
-		Courier courier = this.courierDao.getByCourierId(courierId);
+		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
 		courier.setCourierLatitude(latitude);
 		courier.setCourierLongitude(longitude);
 		courierDao.save(courier);

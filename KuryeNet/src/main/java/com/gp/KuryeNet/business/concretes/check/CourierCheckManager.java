@@ -57,17 +57,26 @@ public class CourierCheckManager extends BaseCheckManager implements CourierChec
 	}
 	
 	@Override
-	public void availableCourier(int courierId) {
-		if(courierDao.getByCourierId(courierId).getCourierStatus() != 100)
+	public void availableCourier(String courierEmail) {
+		if(courierDao.getByCourierEmail(courierEmail).getCourierStatus() != 100)
 			errors.put("courierId", Msg.IS_IN_DISTRIBUTION.get());
 		
 	}
 	
 	@Override
-	public void distributionCourier(int courierId) {
-		if(courierDao.getByCourierId(courierId).getCourierStatus() != 200)
+	public void distributionCourier(String courierEmail) {
+		if(courierDao.getByCourierEmail(courierEmail).getCourierStatus() != 200)
 			errors.put("courierId", Msg.IS_NOT_IN_DISTRIBUTION.get());
 		
 	}
+
+	@Override
+	public void existsCourierByEmail(String courierEmail) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 }

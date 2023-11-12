@@ -73,6 +73,10 @@ public class Utils {
         public static final String HEROKU_APP = "https://javareactcamp-hrms-frontend.herokuapp.com";
 
     }
+    
+    public static boolean hasText(String str) {
+        return str != null && !str.trim().isEmpty();
+    }
 
     public ResponseEntity<?> getResponseEntity(Result result) {
         if (result.isSuccess()) return ResponseEntity.ok(result);

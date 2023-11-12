@@ -18,11 +18,11 @@ public interface CourierService {
 	
 	Result add(Courier courier);
 	
-	Result updateCourierCoordinates(int courierId, double latitude,double longitude);
+	Result updateCourierCoordinates(String courierEmail, double latitude,double longitude);
 	
-	Result startOrder(int orderId, int courierId);
+	Result startOrder(int orderId, String courierEmail);
 	
-	Result endOrder(int orderId, int courierId);
+	Result endOrder(int orderId, String courierEmail);
 		
 	DataResult<Integer> getByCourierIdWithOrderId(int orderId);
 			

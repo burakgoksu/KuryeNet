@@ -2,10 +2,14 @@ package com.gp.KuryeNet.API.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.gp.KuryeNet.business.abstracts.CourierService;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
+import com.gp.KuryeNet.core.utulities.jwt.JwtUtil;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
@@ -27,11 +33,13 @@ import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 public class CouriersController {
 
 	private CourierService courierService;
+	private JwtUtil jwtUtil;
 
 	@Autowired
-	public CouriersController(CourierService courierService) {
+	public CouriersController(CourierService courierService, JwtUtil jwtUtil) {
 		super();
 		this.courierService = courierService;
+		this.jwtUtil = jwtUtil;
 	}
 	
 	@GetMapping("/getall")
@@ -94,20 +102,32 @@ public class CouriersController {
 	}
 	
 	@PostMapping("/startOrder")
-	public ResponseEntity<?> startOrder(@Valid @RequestParam int orderId, @RequestParam int courierId){
-		return Utils.getResponseEntity(this.courierService.startOrder(orderId,courierId));
+	public ResponseEntity<?> startOrder(@Valid @RequestParam int orderId, HttpServletRequest request){
+		String token = jwtUtil.extractTokenFromRequest(request);
+	    String courierEmail = jwtUtil.extractUsername(token);
+	    
+		return Utils.getResponseEntity(this.courierService.startOrder(orderId,courierEmail));
 		
 	}
 	
 	@PostMapping("/endOrder")
-	public ResponseEntity<?> endOrder(@Valid @RequestParam int orderId, @RequestParam int courierId){
-		return Utils.getResponseEntity(this.courierService.endOrder(orderId,courierId));
+	public ResponseEntity<?> endOrder(@Valid @RequestParam int orderId, HttpServletRequest request){
+		String token = jwtUtil.extractTokenFromRequest(request);
+	    String courierEmail = jwtUtil.extractUsername(token);
+	    
+		return Utils.getResponseEntity(this.courierService.endOrder(orderId,courierEmail));
 		
 	}
 	
 	@PutMapping("/updateCourierCoordinates")
-	public ResponseEntity<?> updateCourierCoordinates(@Valid @RequestParam int courierId, @RequestParam double latitude, @RequestParam double longitude){
-		return Utils.getResponseEntity(this.courierService.updateCourierCoordinates(courierId,latitude,longitude));
+	public ResponseEntity<?> updateCourierCoordinates(HttpServletRequest request, @RequestParam double latitude, @RequestParam double longitude){
+		
+	    String token = jwtUtil.extractTokenFromRequest(request);
+	    String courierEmail = jwtUtil.extractUsername(token);
+		
+		return Utils.getResponseEntity(this.courierService.updateCourierCoordinates(courierEmail,latitude,longitude));
 		
 	}
+	
+	
 }

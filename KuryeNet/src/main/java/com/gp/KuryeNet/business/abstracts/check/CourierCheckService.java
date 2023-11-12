@@ -8,6 +8,8 @@ public interface CourierCheckService extends BaseCheckService{
 	
     void existsCourierById(int courierId);
     
+    void existsCourierByEmail(String courierEmail);
+    
     void existsByCourierIdentityNumber(String courierIdentityNumber);
     
     void existsByCourierEmail(String courierEmail);
@@ -16,8 +18,8 @@ public interface CourierCheckService extends BaseCheckService{
     
     void validIdentityNumber(String courierIdentityNumber);
     
-    void availableCourier(int courierId);
+    void availableCourier(String courierEmail);
     
-    void distributionCourier(int courierId);
+    void distributionCourier(String courierEmail);
 
 }
