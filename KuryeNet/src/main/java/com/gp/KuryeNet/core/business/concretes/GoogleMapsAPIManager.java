@@ -54,7 +54,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		
 		String destination = courierlat+","+courierlong;
 		
-		System.out.println(destination);
+		//System.out.println(destination);
 		
 		Order order = orderDao.getByOrderId(orderId);
 		Customer customer = order.getCustomer();
@@ -65,7 +65,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		
 		String orign = customerlat + "," + customerlong;
 		
-		System.out.println(orign);
+		//System.out.println(orign);
 		
         RestTemplate restTemplate = new RestTemplate();
 
@@ -83,7 +83,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
 
-        System.out.println(response);
+        //System.out.println(response);
 
         int remainingMinutes = 0;
         ObjectMapper objectMapper = new ObjectMapper();
