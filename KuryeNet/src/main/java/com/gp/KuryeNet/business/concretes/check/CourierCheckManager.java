@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
+import com.gp.KuryeNet.core.dataAccess.UserDao;
 import com.gp.KuryeNet.core.utulities.Util.CheckUtils;
 import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.exception.exceptions.EntityNotExistsException;
@@ -16,11 +17,13 @@ import lombok.SneakyThrows;
 public class CourierCheckManager extends BaseCheckManager implements CourierCheckService {
 
 	private CourierDao courierDao;
+	private UserDao userDao;
 	
 	@Autowired
-	public CourierCheckManager(CourierDao courierDao) {
+	public CourierCheckManager(CourierDao courierDao,UserDao userDao) {
 		super();
 		this.courierDao = courierDao;
+		this.userDao = userDao;
 	}
 
 	@SneakyThrows
@@ -74,6 +77,13 @@ public class CourierCheckManager extends BaseCheckManager implements CourierChec
 	public void existsCourierByEmail(String courierEmail) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void existsInUserByEmail(String courierEmail) {
+		if(userDao.getByEmail(courierEmail)==null) {
+			errors.put("courierEmail", Msg.NOT_EXIST.get());
+		}
 	}
 
 

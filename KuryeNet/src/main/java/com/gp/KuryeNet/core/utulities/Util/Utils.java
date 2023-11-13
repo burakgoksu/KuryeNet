@@ -69,6 +69,7 @@ public class Utils {
         public static final String VEHICLE_EMISSION_REGEXP = "^(gaz|benzin|dizel|elektrik)$";
         public static final String VEHICLE_TYPE_REGEXP = "^(motorsiklet|araba)$";
         public static final String VEHICLE_PLATE_REGEXP = "^[1-8]\\d[A-Z]{2,3}\\d{3,4}$";
+        public static final String USER_PASSWORD_REGEXP = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:;<>,.?/~`\\\\[\\\\]\\\";'=-])(.{6,})$";
         public static final String LOCALHOST_3000 = "http://localhost:3000";
         public static final String HEROKU_APP = "https://javareactcamp-hrms-frontend.herokuapp.com";
 

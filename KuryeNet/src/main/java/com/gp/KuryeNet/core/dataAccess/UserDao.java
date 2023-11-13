@@ -12,9 +12,10 @@ import com.gp.KuryeNet.core.entities.User;
 @Component
 public interface UserDao extends JpaRepository<User, Integer>{
 	User getByEmail(String email);
-	
-	Optional<User> findByEmail(String email);
-	
+		
 	User findFirstByEmail(String email);
+	
+	boolean existsByEmail(String Email);
+
 	
 }

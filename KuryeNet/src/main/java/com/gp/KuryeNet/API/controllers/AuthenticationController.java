@@ -3,6 +3,7 @@ package com.gp.KuryeNet.API.controllers;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -17,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gp.KuryeNet.core.business.concretes.UserDetailsManager;
 import com.gp.KuryeNet.core.entities.AuthenticationRequest;
 import com.gp.KuryeNet.core.entities.AuthenticationResponse;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.jwt.JwtUtil;
+import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 
 import io.jsonwebtoken.io.IOException;
 
@@ -39,7 +43,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/login")
-	public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException,IOException, java.io.IOException{
+	public DataResult<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException,IOException, java.io.IOException{
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
 		}
@@ -53,7 +57,7 @@ public class AuthenticationController {
 		}
 		final UserDetails userDetails = userDetailsManager.loadUserByUsername(authenticationRequest.getEmail());
 		final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-		return new AuthenticationResponse(jwt);
+		return new SuccessDataResult<AuthenticationResponse>(new AuthenticationResponse(jwt),"Successfully login and JWT created successfully for 24 hours");
 	}
 	
 	

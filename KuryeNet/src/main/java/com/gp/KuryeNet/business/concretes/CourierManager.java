@@ -9,8 +9,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.CourierService;
+import com.gp.KuryeNet.business.abstracts.check.AddressCheckService;
 import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
 import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
+import com.gp.KuryeNet.business.abstracts.check.VehicleCheckService;
 import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
@@ -33,14 +35,18 @@ public class CourierManager implements CourierService{
 	private CourierCheckService courierCheckService;
 	private OrderDao orderDao;
 	private OrderCheckService orderCheckService;
+	private AddressCheckService addressCheckService;
+	private VehicleCheckService vehicleCheckService;
 	
 	@Autowired
-	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService) {
+	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService) {
 		super();
 		this.courierDao = courierDao;
 		this.courierCheckService = courierCheckService;
 		this.orderDao = orderDao;
 		this.orderCheckService = orderCheckService;
+		this.addressCheckService = addressCheckService;
+		this.vehicleCheckService = vehicleCheckService;
 	}
 
 	@Override
@@ -50,11 +56,17 @@ public class CourierManager implements CourierService{
 
 	@Override
 	public Result add(Courier courier) {
+		addressCheckService.existsPhoneNumber(courier.getCourierAddress().getPhoneNumber());
+		addressCheckService.validPhoneNumber(courier.getCourierAddress().getPhoneNumber());
+		vehicleCheckService.validVehicleEmission(courier.getVehicle().getVehicleEmission());
+		vehicleCheckService.validVehiclePlate(courier.getVehicle().getVehiclePlate());
+		vehicleCheckService.existsByVehiclePlate(courier.getVehicle().getVehiclePlate());
 		courierCheckService.existsByCourierEmail(courier.getCourierEmail());
 		courierCheckService.existsByCourierIdentityNumber(courier.getCourierIdentityNumber());
 		courierCheckService.validEmail(courier.getCourierEmail());
 		courierCheckService.validIdentityNumber(courier.getCourierIdentityNumber());
-		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService);
+		courierCheckService.existsInUserByEmail(courier.getCourierEmail());
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,addressCheckService);
 		if(errors!=null) return errors;
 		else this.courierDao.save(courier);
 		

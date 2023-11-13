@@ -3,8 +3,11 @@ package com.gp.KuryeNet.entities.concretes;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,6 +36,7 @@ public class Courier {
 	
 	@Id
 	@Column(name="courier_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int courierId;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Istanbul")
@@ -88,12 +92,12 @@ public class Courier {
 	@OneToMany(mappedBy = "courier")
 	private List<Order> orders;
 	
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="vehicle_id")
 	private Vehicle vehicle;
 	
 	
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="address_id")
 	private Address courierAddress;
 }

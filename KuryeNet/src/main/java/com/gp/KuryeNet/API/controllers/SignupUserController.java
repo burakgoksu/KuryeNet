@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import com.gp.KuryeNet.core.business.abstracts.AuthService;
 import com.gp.KuryeNet.core.entities.SignupDto;
 import com.gp.KuryeNet.core.entities.UserDto;
+import com.gp.KuryeNet.core.utulities.Util.Utils;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,10 +28,12 @@ public class SignupUserController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@RequestBody SignupDto signupDto){
-		UserDto createdUser = authService.createUser(signupDto);
-		if(createdUser == null)
-			return new ResponseEntity<>("User is not created",HttpStatus.BAD_REQUEST);
-		return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
+//		UserDto createdUser = authService.createUser(signupDto);
+//		if(createdUser == null)
+//			return new ResponseEntity<>("User is not created",HttpStatus.BAD_REQUEST);
+//		return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
+		
+		return Utils.getResponseEntity(this.authService.createUser(signupDto));
 	}
 	
 

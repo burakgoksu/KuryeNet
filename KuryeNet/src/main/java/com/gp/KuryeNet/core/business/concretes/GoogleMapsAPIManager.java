@@ -46,19 +46,26 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 	
 
 	@Override
-	public DataResult<Integer> getDirectionsFromGoogleMaps(int courierId, int customerId) {
+	public DataResult<Integer> getDirectionsFromGoogleMaps(String courierEmail, int orderId) {
 		
-		Courier courier = courierDao.getByCourierId(courierId);
+		Courier courier = courierDao.getByCourierEmail(courierEmail);
 		double courierlat = courier.getCourierLatitude();
 		double courierlong = courier.getCourierLongitude();
 		
 		String destination = courierlat+","+courierlong;
 		
-		Customer customer = customerDao.getByCustomerId(customerId);
+		System.out.println(destination);
+		
+		Order order = orderDao.getByOrderId(orderId);
+		Customer customer = order.getCustomer();
+		
+		//Customer customer = customerDao.getByCustomerId(customerId);
 		double customerlat = customer.getCustomerLatitude();
 		double customerlong = customer.getCustomerLongitude();
 		
 		String orign = customerlat + "," + customerlong;
+		
+		System.out.println(orign);
 		
         RestTemplate restTemplate = new RestTemplate();
 
@@ -76,6 +83,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
 
+        System.out.println(response);
 
         int remainingMinutes = 0;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -105,7 +113,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 e.printStackTrace();
             }
             
-            Order order = customer.getOrders().get(0);
+            //order = customer.getOrders().get(0);
             order.setRemainingMinutes(remainingMinutes);
             orderDao.save(order);
                 

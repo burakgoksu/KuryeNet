@@ -49,6 +49,10 @@ public class CheckUtils {
 	    public boolean invalidEmail(String email) {
 	    	return email == null || email.length() < 4 || email.length() > 100 || !Pattern.matches(Utils.Const.EMAIL_REGEXP, email);
  	    }
+	    
+	    public boolean invalidPassword(String password) {
+	    	return password == null || password.length() < 6 || password.length() > 200 || !Pattern.matches(Utils.Const.USER_PASSWORD_REGEXP, password);
+	    }
 
 	    public boolean startEndConflict(short start, Short end) {
 	        return end != null && start > end;

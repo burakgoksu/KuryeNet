@@ -7,6 +7,6 @@ import com.gp.KuryeNet.core.utulities.result.DataResult;
 
 public interface GoogleMapsAPIService {
 	
-	DataResult<Integer> getDirectionsFromGoogleMaps(int courierId,int customerId);
+	DataResult<Integer> getDirectionsFromGoogleMaps(String courierEmail,int orderId);
 	
 }
