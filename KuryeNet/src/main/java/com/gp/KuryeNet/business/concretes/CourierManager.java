@@ -1,5 +1,10 @@
 package com.gp.KuryeNet.business.concretes;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,8 @@ import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.concretes.Order;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 import com.gp.KuryeNet.entities.dtos.StartOrderWithCourierDto;
+
+import net.bytebuddy.asm.Advice.Local;
 
 
 @Service
@@ -130,7 +137,7 @@ public class CourierManager implements CourierService{
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.availableOrder(orderId);
 		courierCheckService.availableCourier(courierEmail);
-		//courierCheckService.existsCourierById(courierEmail);
+		courierCheckService.existsCourierById(courierDao.getByCourierEmail(courierEmail).getCourierId());
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
 		if(errors!=null) return errors;
 		
@@ -149,14 +156,18 @@ public class CourierManager implements CourierService{
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.distributionOrder(orderId);
 		courierCheckService.distributionCourier(courierEmail);
-		//courierCheckService.existsCourierById(courierEmail);
+		courierCheckService.existsCourierById(courierDao.getByCourierEmail(courierEmail).getCourierId());
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,orderCheckService);
 		if(errors!=null) return errors;
 		
+		Instant instant = Instant.now();
+        Date deliveryDate = Date.from(instant);
+	
 		Order order = this.orderDao.getByOrderId(orderId);
 		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
 		courier.setCourierStatus(100);
 		order.setOrderStatus(300);
+		order.setDeliveryDate(deliveryDate);
 		orderDao.save(order);
 		courierDao.save(courier);
 		return new SuccessResult("Order end successfully");

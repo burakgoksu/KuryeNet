@@ -40,6 +40,7 @@ public class AuthManager implements AuthService{
 		
 	 	User user = new User();
         user.setName(signupDto.getName());
+        user.setSurname(signupDto.getSurname());
         user.setEmail(signupDto.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(signupDto.getPassword()));
         User createdUser = userDao.save(user);
@@ -47,6 +48,7 @@ public class AuthManager implements AuthService{
         userDto.setId(createdUser.getId());
         userDto.setEmail(createdUser.getEmail());
         userDto.setName(createdUser.getName());
+        userDto.setSurname(createdUser.getSurname());
         return new SuccessDataResult<UserDto>(userDto,"User created Successfuly");
 	}
 }

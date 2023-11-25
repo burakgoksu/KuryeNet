@@ -46,6 +46,11 @@ public class User {
 	@NotNull
 	private String password;
 	
+	@Column(name="surname")
+	@NotBlank
+	@NotNull
+	private String surname;
+	
 //	@Column(name="roles")
 //	@NotBlank
 //	@NotNull

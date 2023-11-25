@@ -51,13 +51,13 @@ public class Order {
 	//private String dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="order_date")
 	private Date orderDate;
 
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="delivery_date")
 	private Date deliveryDate;
 	
@@ -74,7 +74,7 @@ public class Order {
 	
 	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="estimated_delivery_time")
 	private Date estimatedDeliveryTime;
 	

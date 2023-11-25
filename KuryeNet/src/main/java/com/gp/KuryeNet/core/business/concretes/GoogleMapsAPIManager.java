@@ -1,6 +1,10 @@
 package com.gp.KuryeNet.core.business.concretes;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -112,9 +116,13 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
             } catch (Exception e) {
                 e.printStackTrace();
             }
+                        
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, remainingMinutes);
+            Date estimatedDeliveryDate = calendar.getTime();
             
-            //order = customer.getOrders().get(0);
             order.setRemainingMinutes(remainingMinutes);
+            order.setEstimatedDeliveryTime(estimatedDeliveryDate);
             orderDao.save(order);
                 
         } 
