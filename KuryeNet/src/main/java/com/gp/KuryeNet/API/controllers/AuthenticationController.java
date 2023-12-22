@@ -24,6 +24,7 @@ import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 
 import io.jsonwebtoken.io.IOException;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/authentication")
@@ -43,22 +44,22 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/login")
-	public DataResult<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException,IOException, java.io.IOException{
-		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-		}
-		catch(BadCredentialsException e){
-			throw new BadCredentialsException("Incorrect Username or Password");
-		}
-		
-		catch(DisabledException disabledException){
-			response.sendError(HttpServletResponse.SC_NOT_FOUND,"User is not created. Register User First");
-			return null;
-		}
-		final UserDetails userDetails = userDetailsManager.loadUserByUsername(authenticationRequest.getEmail());
-		final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-		return new SuccessDataResult<AuthenticationResponse>(new AuthenticationResponse(jwt),"Successfully login and JWT created successfully for 24 hours");
+	public Mono<DataResult<AuthenticationResponse>> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+	    return Mono.fromCallable(() -> {
+	        try {
+	            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+	        } catch (BadCredentialsException e) {
+	            throw new BadCredentialsException("Incorrect Username or Password");
+	        } catch (DisabledException disabledException) {
+	            response.sendError(HttpServletResponse.SC_NOT_FOUND, "User is not created. Register User First");
+	            return null;
+	        }
+	        final UserDetails userDetails = userDetailsManager.loadUserByUsername(authenticationRequest.getEmail());
+	        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+	        return new SuccessDataResult<>(new AuthenticationResponse(jwt), "Successfully login and JWT created successfully for 24 hours");
+	    });
 	}
+
 	
 	
 }

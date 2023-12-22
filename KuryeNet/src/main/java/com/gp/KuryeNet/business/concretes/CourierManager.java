@@ -2,15 +2,19 @@ package com.gp.KuryeNet.business.concretes;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.CourierService;
@@ -29,6 +33,7 @@ import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.concretes.Order;
+import com.gp.KuryeNet.entities.dtos.CourierWithOrderDto;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 import com.gp.KuryeNet.entities.dtos.StartOrderWithCourierDto;
 
@@ -61,6 +66,8 @@ public class CourierManager implements CourierService{
 		return new SuccessDataResult<List<Courier>>(this.courierDao.findAll());
 	}
 
+	@Transactional
+	@Async
 	@Override
 	public Result add(Courier courier) {
 		addressCheckService.existsPhoneNumber(courier.getCourierAddress().getPhoneNumber());
@@ -68,11 +75,11 @@ public class CourierManager implements CourierService{
 		vehicleCheckService.validVehicleEmission(courier.getVehicle().getVehicleEmission());
 		vehicleCheckService.validVehiclePlate(courier.getVehicle().getVehiclePlate());
 		vehicleCheckService.existsByVehiclePlate(courier.getVehicle().getVehiclePlate());
-		courierCheckService.existsByCourierEmail(courier.getCourierEmail());
+		//courierCheckService.existsByCourierEmail(courier.getCourierEmail());
 		courierCheckService.existsByCourierIdentityNumber(courier.getCourierIdentityNumber());
 		courierCheckService.validEmail(courier.getCourierEmail());
 		courierCheckService.validIdentityNumber(courier.getCourierIdentityNumber());
-		courierCheckService.existsInUserByEmail(courier.getCourierEmail());
+		//courierCheckService.existsInUserByEmail(courier.getCourierEmail());
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService,addressCheckService);
 		if(errors!=null) return errors;
 		else this.courierDao.save(courier);
@@ -97,6 +104,7 @@ public class CourierManager implements CourierService{
 
 	}
 
+	@Async
 	@Override
 	public DataResult<List<Courier>> getAll(int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo-1,pageSize);
@@ -132,6 +140,8 @@ public class CourierManager implements CourierService{
 		return new SuccessDataResult<Integer>(this.courierDao.getByCourierIdWithOrderId(orderId));
 	}
 	
+	@Async
+	@Transactional
 	@Override
 	public Result startOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
@@ -151,6 +161,8 @@ public class CourierManager implements CourierService{
 		return new SuccessResult("Order start successfully");
 	}
 	
+	@Async
+	@Transactional
 	@Override
 	public Result endOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
@@ -165,6 +177,20 @@ public class CourierManager implements CourierService{
 	
 		Order order = this.orderDao.getByOrderId(orderId);
 		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
+		
+		LocalDate today = LocalDate.now();
+	    LocalDate lastUpdated = courier.getLastDailyUpdate();
+	    
+	    if (lastUpdated == null || !lastUpdated.isEqual(today)) {
+	        courier.setTotal_shipped(0);
+	        courier.setLastDailyUpdate(today);
+	    }
+	    
+	    int tempDailyShipped = courier.getTotal_shipped();
+		courier.setDaily_shipped(tempDailyShipped+1);
+	    
+		int tempTotalShipped = courier.getTotal_shipped();
+		courier.setTotal_shipped(tempTotalShipped+1);
 		courier.setCourierStatus(100);
 		order.setOrderStatus(300);
 		order.setDeliveryDate(deliveryDate);
@@ -173,6 +199,8 @@ public class CourierManager implements CourierService{
 		return new SuccessResult("Order end successfully");
 	}
 
+	@Async
+	@Transactional
 	@Override
 	public Result updateCourierCoordinates(String courierEmail, double latitude, double longitude) {
 		
@@ -181,6 +209,20 @@ public class CourierManager implements CourierService{
 		courier.setCourierLongitude(longitude);
 		courierDao.save(courier);
 		return new SuccessResult("Courier coordinates are changed successfully");
+	}
+
+	@Override
+	public DataResult<Boolean> existsByCourierEmail(String courierEmail) {
+		//courierCheckService.existsByCourierEmail(courierEmail);
+		return new SuccessDataResult<Boolean>(this.courierDao.existsByCourierEmail(courierEmail));
+
+	}
+
+	@Async
+	@Override
+	public DataResult<List<CourierWithOrderDto>> getCourierWithOrderDetails(String orderNumber) {
+		return new SuccessDataResult<List<CourierWithOrderDto>>(this.courierDao.getCourierWithOrderDetails(orderNumber),"CourierWithOrderDetails listed!");
+
 	}
 
 

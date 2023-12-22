@@ -2,6 +2,7 @@ package com.gp.KuryeNet.core.business.concretes;
 
 import java.util.ArrayList;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +21,7 @@ public class UserDetailsManager implements UserDetailsService{
 		this.userDao = userDao;
 	}
 
+	@Async
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		//Write Logic to get the user from the DB

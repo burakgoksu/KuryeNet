@@ -3,11 +3,12 @@ package com.gp.KuryeNet.business.concretes;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
-
+import org.springframework.scheduling.annotation.Async;
 
 import com.gp.KuryeNet.business.abstracts.OrderService;
 import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
@@ -41,12 +42,15 @@ public class OrderManager implements OrderService{
 	}
 
 
+	@Async
 	@Override
 	public DataResult<List<Order>> getAll() {
 		return new SuccessDataResult<List<Order>>(this.orderDao.findAll(),"Order Data Listed");
 	}
 
 
+	@Async
+	@Transactional
 	@Override
 	public Result add(Order order) {
 		orderCheckService.existsByOrderNumber(order.getOrderNumber());
@@ -118,7 +122,8 @@ public class OrderManager implements OrderService{
 
 	}
 
-
+	
+	@Async
 	@Override
 	public DataResult<List<Order>> getAll(int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo-1,pageSize);

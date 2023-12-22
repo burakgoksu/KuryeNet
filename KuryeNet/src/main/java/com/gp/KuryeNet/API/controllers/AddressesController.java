@@ -19,6 +19,8 @@ import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Address;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/api/addresses")
 public class AddressesController {
@@ -32,15 +34,18 @@ public class AddressesController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(@Valid @RequestBody Address address){
-		return Utils.getResponseEntity(this.addressService.add(address));
+	public Mono<ResponseEntity<?>> add(@Valid @RequestBody Address address){
+		return Mono.fromCallable(()->{
+			return this.addressService.add(address);
+		}).map(result -> Utils.getResponseEntity(result));
 		
 	}
 
 	@GetMapping("/getall")
-	public ResponseEntity<?> getAll(){
-		return Utils.getResponseEntity(this.addressService.getAll());
-		
+	public Mono<ResponseEntity<?>> getAll(){
+		return Mono.fromCallable(()->{
+			return this.addressService.getAll();
+		}).map(result -> Utils.getResponseEntity(result));
 	}
 	
 	@GetMapping("/getallByPage")

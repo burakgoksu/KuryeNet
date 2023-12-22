@@ -9,6 +9,8 @@ import com.gp.KuryeNet.entities.concretes.Order;
 import com.gp.KuryeNet.entities.dtos.OrderWithAddressDto;
 import com.gp.KuryeNet.entities.dtos.OrderWithCourierDto;
 
+import reactor.core.publisher.Mono;
+
 import java.util.Date;
 import java.util.List;
 
@@ -36,8 +38,10 @@ public class OrdersController {
 	}
 
 	@GetMapping("/getall")
-	public ResponseEntity<?> getAll(){
-		return Utils.getResponseEntity(this.orderService.getAll());
+	public Mono<ResponseEntity<?>> getAll(){
+		return Mono.fromCallable(()->{
+			return this.orderService.getAll();
+		}).map(result -> Utils.getResponseEntity(result));
 		
 	}
 	
@@ -54,8 +58,10 @@ public class OrdersController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(@Valid @RequestBody Order order){
-		return Utils.getResponseEntity(this.orderService.add(order));
+	public Mono<ResponseEntity<?>> add(@Valid @RequestBody Order order){
+		return Mono.fromCallable(()->{
+			return this.orderService.add(order);
+		}).map(result -> Utils.getResponseEntity(result));
 		
 	}
 	

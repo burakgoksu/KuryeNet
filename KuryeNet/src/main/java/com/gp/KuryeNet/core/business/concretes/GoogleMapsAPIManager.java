@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,10 +21,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gp.KuryeNet.core.business.abstracts.GoogleMapsAPIService;
+import com.gp.KuryeNet.core.business.abstracts.check.GoogleMapsAPICheckService;
+import com.gp.KuryeNet.core.business.concretes.check.GoogleMapsAPICheckManager;
+import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.entities.DirectionsResponse;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
+import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.dataAccess.abstracts.CustomerDao;
@@ -36,21 +43,30 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 	private CourierDao courierDao;
 	private CustomerDao customerDao;
 	private OrderDao orderDao;
+	private GoogleMapsAPICheckService googleMapsAPICheckService;
 	private RestTemplate restTemplate;
 	
 	@Autowired
-	public GoogleMapsAPIManager(CourierDao courierDao, CustomerDao customerDao,RestTemplate restTemplate,OrderDao orderDao) {
+	public GoogleMapsAPIManager(CourierDao courierDao, CustomerDao customerDao,RestTemplate restTemplate,OrderDao orderDao,GoogleMapsAPICheckService googleMapsAPICheckService) {
 		super();
 		this.courierDao = courierDao;
 		this.customerDao = customerDao;
 		this.orderDao = orderDao;
 		this.restTemplate = restTemplate;
+		this.googleMapsAPICheckService = googleMapsAPICheckService;
 	}
 
 	
 
+	@Async
+	@Transactional
 	@Override
-	public DataResult<Integer> getDirectionsFromGoogleMaps(String courierEmail, int orderId) {
+	public Result getDirectionsFromGoogleMaps(String courierEmail, int orderId) {
+		
+		googleMapsAPICheckService.isCourierInDistribution(courierEmail);
+		googleMapsAPICheckService.isOrderInDistribution(orderId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(googleMapsAPICheckService);
+		if(errors!=null) return errors;
 		
 		Courier courier = courierDao.getByCourierEmail(courierEmail);
 		double courierlat = courier.getCourierLatitude();
@@ -131,7 +147,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         	return new ErrorDataResult<>("Request failed with status code: " + response.getStatusCode());
         }
         
-        return new SuccessDataResult<Integer>(remainingMinutes);
+        return new SuccessDataResult<Integer>(remainingMinutes,"Trafiğe Göre Tahmini Teslimat Dakikası Hesaplanmıştır.");
 	}
 
 }

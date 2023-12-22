@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.gp.KuryeNet.entities.concretes.Courier;
+import com.gp.KuryeNet.entities.dtos.CourierWithOrderDto;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
 
@@ -38,6 +39,9 @@ public interface CourierDao extends JpaRepository<Courier,Integer>{
 	
 	@Query("SELECT NEW com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto(c.courierId,c.courierName,c.courierSurname,v.vehicleType,v.vehicleBrand,v.vehiclePlate) FROM Vehicle v INNER JOIN v.couriers c" )
 	List<CourierWithVehicleDto> getCourierWithVehicleDetails();
+	
+	@Query("SELECT NEW com.gp.KuryeNet.entities.dtos.CourierWithOrderDto(c.courierId,c.courierLatitude,c.courierLongitude,c.courierStatus,o.orderStatus,o.remainingMinutes,o.estimatedDeliveryTime) FROM Order o INNER JOIN o.courier c where o.orderNumber=:orderNumber" )
+	List<CourierWithOrderDto> getCourierWithOrderDetails(String orderNumber);
 	
 	
 	

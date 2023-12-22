@@ -1,5 +1,6 @@
 package com.gp.KuryeNet.entities.concretes;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -89,15 +90,20 @@ public class Courier {
 	@Column(name="total_shipped")
 	private int total_shipped;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Istanbul")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Column(name="last_daily_update")
+	private LocalDate lastDailyUpdate;
+	
 	@OneToMany(mappedBy = "courier")
 	private List<Order> orders;
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="vehicle_id")
 	private Vehicle vehicle;
 	
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="address_id")
 	private Address courierAddress;
 }

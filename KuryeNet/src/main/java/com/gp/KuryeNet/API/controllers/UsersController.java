@@ -25,6 +25,8 @@ import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
@@ -38,8 +40,10 @@ public class UsersController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<?> add(@Valid @RequestBody User user) {
-		return Utils.getResponseEntity(this.userService.add(user));
+	public Mono<ResponseEntity<?>> add(@Valid @RequestBody User user) {
+		return Mono.fromCallable(()->{
+			return this.userService.add(user);
+		}).map(result -> Utils.getResponseEntity(result));
 	}
 	
 	@GetMapping("/getByEmail")

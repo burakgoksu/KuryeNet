@@ -28,6 +28,9 @@ import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 
+import reactor.core.publisher.Mono;
+
+
 @RestController
 @RequestMapping("/api/couriers")
 public class CouriersController {
@@ -43,8 +46,10 @@ public class CouriersController {
 	}
 	
 	@GetMapping("/getall")
-	public ResponseEntity<?> getAll(){
-		return Utils.getResponseEntity(this.courierService.getAll()); 
+	public Mono<ResponseEntity<?>> getAll(){
+		return Mono.fromCallable(()->{
+			return this.courierService.getAll(); 
+		}).map(result -> Utils.getResponseEntity(result));
 		
 	}
 	
@@ -61,8 +66,10 @@ public class CouriersController {
 	}
 	
 	@PostMapping("/add")
-	public ResponseEntity<?> add(@Valid @RequestBody Courier courier){
-		return Utils.getResponseEntity(this.courierService.add(courier)) ;
+	public Mono<ResponseEntity<?>> add(@Valid @RequestBody Courier courier){
+		return Mono.fromCallable(()->{
+			return this.courierService.add(courier);
+		}).map(result -> Utils.getResponseEntity(result));
 		
 	}
 	
@@ -77,8 +84,19 @@ public class CouriersController {
 	}
 	
 	@GetMapping("/getByCourierEmail")
-	public ResponseEntity<?> getByCourierEmail(@RequestParam String courierEmail){
-		return Utils.getResponseEntity(this.courierService.getByCourierEmail(courierEmail));
+	public ResponseEntity<?> getByCourierEmail(HttpServletRequest request){
+		String token = jwtUtil.extractTokenFromRequest(request);
+	    String courierEmail = jwtUtil.extractUsername(token);
+
+	    return Utils.getResponseEntity(this.courierService.getByCourierEmail(courierEmail));
+	}
+	
+	@GetMapping("/existsByCourierEmail")
+	public ResponseEntity<?> existsByCourierEmail(HttpServletRequest request){
+		String token = jwtUtil.extractTokenFromRequest(request);
+	    String courierEmail = jwtUtil.extractUsername(token);
+
+	    return Utils.getResponseEntity(this.courierService.existsByCourierEmail(courierEmail));
 	}
 	
 	@GetMapping("/getByCourierCity")
@@ -89,6 +107,13 @@ public class CouriersController {
 	@GetMapping("/getCourierWithVehicleDetails")
 	public ResponseEntity<?> getCourierWithVehicleDetails(){
 		return Utils.getResponseEntity(this.courierService.getCourierWithVehicleDetails());
+	}
+	
+	@GetMapping("/getCourierWithOrderDetails")
+	public Mono<ResponseEntity<?>> getCourierWithOrderDetails(@Valid @RequestParam String orderNumber){
+		return Mono.fromCallable(()->{
+			return this.courierService.getCourierWithOrderDetails(orderNumber);
+		}).map(result -> Utils.getResponseEntity(result));
 	}
 	
 	@GetMapping("/getById")
@@ -102,31 +127,34 @@ public class CouriersController {
 	}
 	
 	@PostMapping("/startOrder")
-	public ResponseEntity<?> startOrder(@Valid @RequestParam int orderId, HttpServletRequest request){
-		String token = jwtUtil.extractTokenFromRequest(request);
-	    String courierEmail = jwtUtil.extractUsername(token);
-	    
-		return Utils.getResponseEntity(this.courierService.startOrder(orderId,courierEmail));
-		
-	}
+    public Mono<ResponseEntity<?>> startOrder(@Valid @RequestParam int orderId, HttpServletRequest request) {
+        return Mono.fromCallable(() -> {
+            String token = jwtUtil.extractTokenFromRequest(request);
+            String courierEmail = jwtUtil.extractUsername(token);
+            
+            return this.courierService.startOrder(orderId, courierEmail);
+        }).map(result -> Utils.getResponseEntity(result));
+    }
 	
 	@PostMapping("/endOrder")
-	public ResponseEntity<?> endOrder(@Valid @RequestParam int orderId, HttpServletRequest request){
-		String token = jwtUtil.extractTokenFromRequest(request);
-	    String courierEmail = jwtUtil.extractUsername(token);
-	    
-		return Utils.getResponseEntity(this.courierService.endOrder(orderId,courierEmail));
-		
+	public Mono<ResponseEntity<?>> endOrder(@Valid @RequestParam int orderId, HttpServletRequest request){
+		return Mono.fromCallable(()->{
+			String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
+		    
+			return this.courierService.endOrder(orderId,courierEmail);
+		}).map(result -> Utils.getResponseEntity(result));
+
 	}
 	
 	@PutMapping("/updateCourierCoordinates")
-	public ResponseEntity<?> updateCourierCoordinates(HttpServletRequest request, @RequestParam double latitude, @RequestParam double longitude){
+	public Mono<ResponseEntity<?>> updateCourierCoordinates(HttpServletRequest request, @RequestParam double latitude, @RequestParam double longitude){
+		return Mono.fromCallable(()->{
+		    String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
 		
-	    String token = jwtUtil.extractTokenFromRequest(request);
-	    String courierEmail = jwtUtil.extractUsername(token);
-		
-		return Utils.getResponseEntity(this.courierService.updateCourierCoordinates(courierEmail,latitude,longitude));
-		
+		    return this.courierService.updateCourierCoordinates(courierEmail,latitude,longitude);
+		}).map(result -> Utils.getResponseEntity(result));
 	}
 	
 	

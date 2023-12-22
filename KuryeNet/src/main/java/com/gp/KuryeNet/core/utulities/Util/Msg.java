@@ -56,7 +56,8 @@ public enum Msg {
     MALFORMED_JSON_REQUEST("Malformed JSON request"),
     LOGIN_FAIL("Please check your email and password"),
 	IS_IN_DISTRIBUTION("is in distribution"),
-	IS_NOT_IN_DISTRIBUTION("is not in distribution");
+	IS_NOT_IN_DISTRIBUTION("is not in distribution"),
+	IS_DELIVERED("is delivered");
 
     private final String MSG;
 

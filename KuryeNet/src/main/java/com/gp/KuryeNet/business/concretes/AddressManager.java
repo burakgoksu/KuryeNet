@@ -2,10 +2,13 @@ package com.gp.KuryeNet.business.concretes;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.business.abstracts.AddressService;
@@ -34,6 +37,7 @@ public class AddressManager implements AddressService{
 		this.addressCheckService = addressCheckService;
 	}
 	
+	@Async
 	@Override
 	public DataResult<List<Address>> getAll() {
 		return new SuccessDataResult<List<Address>>(this.addressDao.findAll(),"Address Data Listed");
@@ -51,6 +55,8 @@ public class AddressManager implements AddressService{
 		return new SuccessDataResult<List<Address>>(this.addressDao.findAll(sort),"ASC Address listed successfully");
 	}
 
+	@Async
+	@Transactional
 	@Override
 	public Result add(Address address) {
 		addressCheckService.existsPhoneNumber(address.getPhoneNumber());

@@ -14,6 +14,8 @@ import com.gp.KuryeNet.core.business.abstracts.GoogleMapsAPIService;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.jwt.JwtUtil;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/api/googlemaps")
 public class GoogleMapsAPIController {
@@ -29,11 +31,12 @@ public class GoogleMapsAPIController {
 	}
 	
 	@PostMapping("/getDirection")
-	public ResponseEntity<?> getDirection(HttpServletRequest request, @RequestParam int orderId){
-		String token = jwtUtil.extractTokenFromRequest(request);
-	    String courierEmail = jwtUtil.extractUsername(token);
-		return Utils.getResponseEntity(this.googleMapsAPIService.getDirectionsFromGoogleMaps(courierEmail, orderId));
-		
+	public Mono<ResponseEntity<?>> getDirection(HttpServletRequest request, @RequestParam int orderId){
+		return Mono.fromCallable(()->{
+			String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
+			return this.googleMapsAPIService.getDirectionsFromGoogleMaps(courierEmail, orderId);
+		}).map(result -> Utils.getResponseEntity(result));
 	}
 
 }

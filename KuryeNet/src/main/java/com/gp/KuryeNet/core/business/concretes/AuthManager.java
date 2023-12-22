@@ -1,6 +1,9 @@
 package com.gp.KuryeNet.core.business.concretes;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,8 @@ public class AuthManager implements AuthService{
 		this.authCheckService = authCheckService;
 	}
 
+	@Async
+	@Transactional
 	@Override
 	public Result createUser(SignupDto signupDto) {
 		authCheckService.existsByEmail(signupDto.getEmail());
