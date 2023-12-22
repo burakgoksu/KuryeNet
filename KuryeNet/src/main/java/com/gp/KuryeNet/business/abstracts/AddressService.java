@@ -23,5 +23,4 @@ public interface AddressService {
 	DataResult<List<Address>> getByPhoneNumber(String phoneNumber);
 	
 	DataResult<List<Address>> getByCity(String city);
-	
 }
