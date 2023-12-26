@@ -42,7 +42,7 @@ public interface CourierService {
 	
 	DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails();
 	
-	DataResult<List<CourierWithOrderDto>> getCourierWithOrderDetails(String orderNumber);
+	DataResult<CourierWithOrderDto> getCourierWithOrderDetails(String orderNumber);
 	
 	DataResult<Boolean> existsByCourierEmail(String courierEmail);
 }

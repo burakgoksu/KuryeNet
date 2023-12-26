@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +31,17 @@ public class GoogleMapsAPIController {
 		this.jwtUtil = jwtUtil;
 	}
 	
-	@PostMapping("/getDirection")
-	public Mono<ResponseEntity<?>> getDirection(HttpServletRequest request, @RequestParam int orderId){
+	@GetMapping("/getRemainingMinutesFromGoogleMaps")
+	public Mono<ResponseEntity<?>> getRemainingMinutesFromGoogleMaps(HttpServletRequest request, @RequestParam int orderId){
+		return Mono.fromCallable(()->{
+			String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
+			return this.googleMapsAPIService.getRemainingMinutesFromGoogleMaps(courierEmail, orderId);
+		}).map(result -> Utils.getResponseEntity(result));
+	}
+	
+	@GetMapping("/getDirectionsFromGoogleMaps")
+	public Mono<ResponseEntity<?>> getDirectionsFromGoogleMaps(HttpServletRequest request, @RequestParam int orderId){
 		return Mono.fromCallable(()->{
 			String token = jwtUtil.extractTokenFromRequest(request);
 		    String courierEmail = jwtUtil.extractUsername(token);

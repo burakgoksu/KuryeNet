@@ -8,6 +8,8 @@ import com.gp.KuryeNet.core.utulities.result.Result;
 
 public interface GoogleMapsAPIService {
 	
-	Result getDirectionsFromGoogleMaps(String courierEmail,int orderId);
+	Result getRemainingMinutesFromGoogleMaps(String courierEmail,int orderId);
+	
+	Result getDirectionsFromGoogleMaps(String courierEmail, int orderId);
 	
 }

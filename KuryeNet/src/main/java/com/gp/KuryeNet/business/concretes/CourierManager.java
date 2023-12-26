@@ -220,8 +220,8 @@ public class CourierManager implements CourierService{
 
 	@Async
 	@Override
-	public DataResult<List<CourierWithOrderDto>> getCourierWithOrderDetails(String orderNumber) {
-		return new SuccessDataResult<List<CourierWithOrderDto>>(this.courierDao.getCourierWithOrderDetails(orderNumber),"CourierWithOrderDetails listed!");
+	public DataResult<CourierWithOrderDto> getCourierWithOrderDetails(String orderNumber) {
+		return new SuccessDataResult<CourierWithOrderDto>(this.courierDao.getCourierWithOrderDetails(orderNumber),"CourierWithOrderDetails listed!");
 
 	}
 

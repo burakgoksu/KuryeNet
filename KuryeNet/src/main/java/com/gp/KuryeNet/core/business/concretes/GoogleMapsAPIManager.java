@@ -8,6 +8,8 @@ import java.util.Date;
 
 import javax.transaction.Transactional;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -61,7 +63,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 	@Async
 	@Transactional
 	@Override
-	public Result getDirectionsFromGoogleMaps(String courierEmail, int orderId) {
+	public Result getRemainingMinutesFromGoogleMaps(String courierEmail, int orderId) {
 		
 		googleMapsAPICheckService.isCourierInDistribution(courierEmail);
 		googleMapsAPICheckService.isOrderInDistribution(orderId);
@@ -148,6 +150,57 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         }
         
         return new SuccessDataResult<Integer>(remainingMinutes,"Trafiğe Göre Tahmini Teslimat Dakikası Hesaplanmıştır.");
+	}
+
+
+
+	@Async
+	@Transactional
+	@Override
+	public Result getDirectionsFromGoogleMaps(String courierEmail, int orderId) {
+		googleMapsAPICheckService.isCourierInDistribution(courierEmail);
+		googleMapsAPICheckService.isOrderInDistribution(orderId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(googleMapsAPICheckService);
+		if(errors!=null) return errors;
+		
+		Courier courier = courierDao.getByCourierEmail(courierEmail);
+		double courierlat = courier.getCourierLatitude();
+		double courierlong = courier.getCourierLongitude();
+		
+		String destination = courierlat+","+courierlong;
+		
+		//System.out.println(destination);
+		
+		Order order = orderDao.getByOrderId(orderId);
+		Customer customer = order.getCustomer();
+		
+		//Customer customer = customerDao.getByCustomerId(customerId);
+		double customerlat = customer.getCustomerLatitude();
+		double customerlong = customer.getCustomerLongitude();
+		
+		String orign = customerlat + "," + customerlong;
+		
+		//System.out.println(orign);
+		
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        String url = "https://maps.googleapis.com/maps/api/directions/json";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("destination", destination)
+                .queryParam("origin", orign)
+                .queryParam("key", Utils.Const.GOOGLE_MAPS_API_KEY)
+                .queryParam("mode", "driving")
+                .queryParam("departure_time", "now")
+                .queryParam("traffic_model", "best_guess");
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+        String responseBody = response.getBody();
+        
+        return new SuccessDataResult<>(responseBody, "Yol Tarifi alınmıştır.");
+
 	}
 
 }
