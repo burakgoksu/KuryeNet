@@ -1,1 +1,1 @@
-web: java -jar target/kuryenet.jar
+web: java -jar target/KuryeNet-0.0.1-SNAPSHOT.jar
