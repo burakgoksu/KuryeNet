@@ -167,7 +167,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		double courierlat = courier.getCourierLatitude();
 		double courierlong = courier.getCourierLongitude();
 		
-		String destination = courierlat+","+courierlong;
+		String orign = courierlat+","+courierlong;
 		
 		//System.out.println(destination);
 		
@@ -178,7 +178,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		double customerlat = customer.getCustomerLatitude();
 		double customerlong = customer.getCustomerLongitude();
 		
-		String orign = customerlat + "," + customerlong;
+		String destination = customerlat + "," + customerlong;
 		
 		//System.out.println(orign);
 		
