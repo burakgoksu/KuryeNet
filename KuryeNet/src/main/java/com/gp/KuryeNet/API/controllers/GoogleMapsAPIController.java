@@ -31,12 +31,12 @@ public class GoogleMapsAPIController {
 		this.jwtUtil = jwtUtil;
 	}
 	
-	@GetMapping("/getRemainingMinutesFromGoogleMaps")
-	public Mono<ResponseEntity<?>> getRemainingMinutesFromGoogleMaps(HttpServletRequest request, @RequestParam int orderId){
+	@GetMapping("/getRemainingDataFromGoogleMaps")
+	public Mono<ResponseEntity<?>> getRemainingDataFromGoogleMaps(HttpServletRequest request, @RequestParam int orderId){
 		return Mono.fromCallable(()->{
 			String token = jwtUtil.extractTokenFromRequest(request);
 		    String courierEmail = jwtUtil.extractUsername(token);
-			return this.googleMapsAPIService.getRemainingMinutesFromGoogleMaps(courierEmail, orderId);
+			return this.googleMapsAPIService.getRemainingDataFromGoogleMaps(courierEmail, orderId);
 		}).map(result -> Utils.getResponseEntity(result));
 	}
 	

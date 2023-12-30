@@ -29,12 +29,12 @@ public class CourierWithOrderDto {
 	
 	private int remainingMinutes;
 	
-	@NotNull
+	private int remainingDistance;
+	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date deliveryDate;
 	
-	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Europe/Istanbul")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date estimatedDeliveryTime; 

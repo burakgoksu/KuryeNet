@@ -63,13 +63,14 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 	@Async
 	@Transactional
 	@Override
-	public Result getRemainingMinutesFromGoogleMaps(String courierEmail, int orderId) {
+	public Result getRemainingDataFromGoogleMaps(String courierEmail, int orderId) {
 		
 		googleMapsAPICheckService.isCourierInDistribution(courierEmail);
 		googleMapsAPICheckService.isOrderInDistribution(orderId);
 		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(googleMapsAPICheckService);
 		if(errors!=null) return errors;
 		
+		DirectionsResponse directionsResponse = new DirectionsResponse();
 		Courier courier = courierDao.getByCourierEmail(courierEmail);
 		double courierlat = courier.getCourierLatitude();
 		double courierlong = courier.getCourierLongitude();
@@ -108,6 +109,10 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         //System.out.println(response);
 
         int remainingMinutes = 0;
+        String remainingMinutesText= null;
+        int remainingDistance = 0;
+        String remainingDistanceText = null;
+        
         ObjectMapper objectMapper = new ObjectMapper();
         
         // Handle the response
@@ -123,10 +128,19 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                     JsonNode legs = routes.get(0).get("legs");
                     if (legs != null && legs.isArray() && legs.size() > 0) {
                         JsonNode durationInTraffic = legs.get(0).get("duration_in_traffic");
-                        if (durationInTraffic != null && durationInTraffic.has("text")) {
-                            // Now you can safely access the "text" node
-                            String remainingMinutesText = durationInTraffic.get("text").asText().split(" ")[0];
-                            remainingMinutes = Integer.parseInt(remainingMinutesText);
+                        JsonNode distance = legs.get(0).get("distance");
+                        if (durationInTraffic != null && durationInTraffic.has("text") && durationInTraffic.has("value") && distance.has("text") && distance.has("value")) {
+                            String remainingMinutesTextData = durationInTraffic.get("text").asText();
+                            String remainingMinutesData = durationInTraffic.get("value").asText();
+                            remainingMinutesTextData = remainingMinutesTextData.replace("hour", "saat").replace("hours", "saat").replace("mins", "dakika").replace("min", "dakika");
+                            remainingMinutes = Integer.parseInt(remainingMinutesData)/60;
+                            remainingMinutesText = remainingMinutesTextData;
+                            
+                            String remainingDistanceTextData = distance.get("text").asText();
+                            String remainingDistanceData = distance.get("value").asText();
+                            remainingDistance = Integer.parseInt(remainingDistanceData);
+                            remainingDistanceText = remainingDistanceTextData;
+                            
                         }
                     }
                 }
@@ -142,6 +156,11 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
             order.setRemainingMinutes(remainingMinutes);
             order.setEstimatedDeliveryTime(estimatedDeliveryDate);
             orderDao.save(order);
+            
+            directionsResponse.setRemainingMinutes(remainingMinutes);
+            directionsResponse.setRemainingMinutesText(remainingMinutesText);
+            directionsResponse.setRemainingDistance(remainingDistance);
+            directionsResponse.setRemainingDistanceText(remainingDistanceText);
                 
         } 
         
@@ -149,7 +168,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
         	return new ErrorDataResult<>("Request failed with status code: " + response.getStatusCode());
         }
         
-        return new SuccessDataResult<Integer>(remainingMinutes,"Trafiğe Göre Tahmini Teslimat Dakikası Hesaplanmıştır.");
+        return new SuccessDataResult<DirectionsResponse>(directionsResponse,"Trafiğe Göre Tahmini Teslimat Dakikası Hesaplanmıştır.");
 	}
 
 

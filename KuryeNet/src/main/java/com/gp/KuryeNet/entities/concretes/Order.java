@@ -81,6 +81,9 @@ public class Order {
 	@Column(name="remaining_minutes")
 	private int remainingMinutes;
 	
+	@Column(name="remaining_distance")
+	private int remainingDistance;
+	
 	@Column(name="latitude")
 	private double latitude;
 	

@@ -10,5 +10,11 @@ import lombok.NoArgsConstructor;
 public class DirectionsResponse {
 	
 	private int remainingMinutes; 
+	
+	private String remainingMinutesText;
+	
+	private int remainingDistance;
+	
+	private String remainingDistanceText;
 
 }
