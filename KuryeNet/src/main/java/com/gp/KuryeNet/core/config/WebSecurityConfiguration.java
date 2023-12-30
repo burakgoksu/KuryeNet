@@ -33,7 +33,7 @@ public class WebSecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 		return httpSecurity.csrf().disable()
 				.authorizeHttpRequests()
-				.antMatchers("/auth/**","/authentication/**","/api/orders/getByOrderNumber","/api/couriers/getCourierWithOrderDetails").permitAll()
+				.antMatchers("/auth/**","/authentication/**","/api/orders/getByOrderNumber","/api/couriers/getCourierWithOrderDetails","/api/books/getall","/api/books/getByPageNumber").permitAll()
 				.and()
 				.authorizeHttpRequests()
 				.antMatchers("/api/**").authenticated()

@@ -193,11 +193,13 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 .queryParam("key", Utils.Const.GOOGLE_MAPS_API_KEY)
                 .queryParam("mode", "driving")
                 .queryParam("departure_time", "now")
-                .queryParam("traffic_model", "best_guess");
+                .queryParam("traffic_model", "best_guess")
+                .queryParam("alternatives", "true");
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
         String responseBody = response.getBody();
+        //System.out.print(responseBody);
         
         return new SuccessDataResult<>(responseBody, "Yol Tarifi alınmıştır.");
 
