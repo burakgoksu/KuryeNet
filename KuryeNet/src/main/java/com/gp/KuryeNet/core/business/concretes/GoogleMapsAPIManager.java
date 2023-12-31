@@ -133,9 +133,10 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                             String remainingMinutesTextData = durationInTraffic.get("text").asText();
                             String remainingMinutesData = durationInTraffic.get("value").asText();
                             remainingMinutesTextData = remainingMinutesTextData.replace("hour", "saat").replace("hours", "saat").replace("mins", "dakika").replace("min", "dakika");
-                            remainingMinutes = Integer.parseInt(remainingMinutesData)/60;
                             remainingMinutesText = remainingMinutesTextData;
-                            
+                            double remainingMinutesDouble = Double.parseDouble(remainingMinutesData) / 60.0;
+                            long roundedRemainingMinutes = Math.round(remainingMinutesDouble);
+                            remainingMinutes = (int) roundedRemainingMinutes;
                             String remainingDistanceTextData = distance.get("text").asText();
                             String remainingDistanceData = distance.get("value").asText();
                             remainingDistance = Integer.parseInt(remainingDistanceData);
@@ -154,6 +155,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
             Date estimatedDeliveryDate = calendar.getTime();
             
             order.setRemainingMinutes(remainingMinutes);
+            order.setRemainingDistance(remainingDistance);
             order.setEstimatedDeliveryTime(estimatedDeliveryDate);
             orderDao.save(order);
             

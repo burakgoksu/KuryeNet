@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orderAddress"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Order {
 	
 	@Id
