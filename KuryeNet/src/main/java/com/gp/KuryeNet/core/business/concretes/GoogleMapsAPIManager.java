@@ -101,7 +101,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 .queryParam("key", Utils.Const.GOOGLE_MAPS_API_KEY)
                 .queryParam("mode", "driving")
                 .queryParam("departure_time", "now")
-                .queryParam("traffic_model", "best_guess");
+                .queryParam("traffic_model", "best_guess"); 
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
@@ -199,6 +199,8 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		double customerlat = customer.getCustomerLatitude();
 		double customerlong = customer.getCustomerLongitude();
 		
+		String emission = courier.getVehicle().getVehicleEmission();
+		
 		String destination = customerlat + "," + customerlong;
 		
 		//System.out.println(orign);
@@ -215,7 +217,8 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 .queryParam("mode", "driving")
                 .queryParam("departure_time", "now")
                 .queryParam("traffic_model", "best_guess")
-                .queryParam("alternatives", "true");
+                .queryParam("alternatives", "true")
+                .queryParam("emission", emission);
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);

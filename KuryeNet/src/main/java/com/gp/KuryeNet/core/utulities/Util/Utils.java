@@ -57,7 +57,7 @@ public class Utils {
         public static final int MAX_DEPARTMENT_NAME = 100;
         public static final int MAX_SKILL_NAME = 100;
         
-        public static final String GOOGLE_MAPS_API_KEY = "AIzaSyAyhm6V2ZW0_cK-_ucdIqlP5aRTYV7u5fU";
+        public static final String GOOGLE_MAPS_API_KEY = "AIzaSyC7VeWO2MLggWTZlR7tIhyxVU0mDc6g0Po";
         public static final String NAT_ID_REGEXP = "\\d{11}";
         public static final String ID_NUMBER_REGEXP = "^[1-9]{1}[0-9]{10}$";
         public static final String PROVIDER_MERSIS_NO_REGEXP = "^\\d{16}$";
