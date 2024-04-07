@@ -1,5 +1,8 @@
 package com.gp.KuryeNet.core.utulities.result;
 
+import lombok.Data;
+
+@Data
 public class SuccessDataResult<T> extends DataResult<T>{
 
 	public SuccessDataResult(T data) {

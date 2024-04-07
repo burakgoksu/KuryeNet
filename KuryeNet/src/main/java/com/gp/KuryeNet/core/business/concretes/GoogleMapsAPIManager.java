@@ -57,7 +57,6 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		this.restTemplate = restTemplate;
 		this.googleMapsAPICheckService = googleMapsAPICheckService;
 	}
-
 	
 
 	@Async

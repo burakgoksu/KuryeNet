@@ -97,6 +97,9 @@ public class Order {
 	@Column(name="ordered_platform")
 	private int orderedPlatform;
 	
+	@Column(name="delivery_minutes_ai")
+	private int deliveryMinutesAI;
+	
 	@ManyToOne()
 	@JoinColumn(name="courier_id")
 	private Courier courier;
