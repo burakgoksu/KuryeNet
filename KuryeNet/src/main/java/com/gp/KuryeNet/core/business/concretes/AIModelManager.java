@@ -252,7 +252,7 @@ public class AIModelManager implements AIModelService{
         try {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper objectMapper = new ObjectMapper();
-            String apiUrl = "http://127.0.0.1:5000/predict"; // API'nizin URL'si
+            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/predict"; // API'nizin URL'si
 
             // AIModelPredictionRequest nesnesini JSON string'ine dönüştür
             String jsonRequest = objectMapper.writeValueAsString(aiModelPredictionRequest);
