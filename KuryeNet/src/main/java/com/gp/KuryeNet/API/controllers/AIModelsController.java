@@ -30,11 +30,20 @@ public class AIModelsController {
 	}
 	
 	@GetMapping("/getPrediction")
-	public Mono<ResponseEntity<?>> getRemainingDataFromGoogleMaps(HttpServletRequest request,@RequestParam int orderId){
+	public Mono<ResponseEntity<?>> getPrediction(HttpServletRequest request,@RequestParam int orderId){
 		return Mono.fromCallable(()->{
 			String token = jwtUtil.extractTokenFromRequest(request);
 		    String courierEmail = jwtUtil.extractUsername(token);
 			return this.aiModelService.getPrediction(courierEmail,orderId);
+		}).map(result -> Utils.getResponseEntity(result));
+	}
+	
+	@GetMapping("/writeData")
+	public Mono<ResponseEntity<?>> writeData(HttpServletRequest request,@RequestParam int orderId){
+		return Mono.fromCallable(()->{
+			String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
+			return this.aiModelService.writeData(courierEmail,orderId);
 		}).map(result -> Utils.getResponseEntity(result));
 	}
 	

@@ -1,12 +1,16 @@
 package com.gp.KuryeNet.business.concretes;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.transaction.Transactional;
 
@@ -174,7 +178,7 @@ public class CourierManager implements CourierService{
 		
 		Instant instant = Instant.now();
         Date deliveryDate = Date.from(instant);
-	
+        
 		Order order = this.orderDao.getByOrderId(orderId);
 		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
 		
@@ -193,7 +197,40 @@ public class CourierManager implements CourierService{
 		courier.setTotal_shipped(tempTotalShipped+1);
 		courier.setCourierStatus(100);
 		order.setOrderStatus(300);
-		order.setDeliveryDate(deliveryDate);
+		order.setDeliveryDate(deliveryDate);	
+		
+		
+		String order_date = order.getOrderDate().toString();
+		String delivery_date = order.getDeliveryDate().toString();
+		
+		SimpleDateFormat incomingFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss 'TRT' yyyy",Locale.ENGLISH);
+		incomingFormat.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+	    SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	    
+	    String targetDeliveryDate = null;
+	    try {
+			Date incomingDate = incomingFormat.parse(delivery_date);
+		    targetDeliveryDate = targetFormat.format(incomingDate);
+		    System.out.println("targetDateStr: "+targetDeliveryDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	    
+					
+		if (order_date.contains(":")) {
+			order_date = order_date.substring(0, order_date.lastIndexOf(":"));
+	    }
+		if (targetDeliveryDate.contains(":")) {
+			targetDeliveryDate = targetDeliveryDate.substring(0, targetDeliveryDate.lastIndexOf(":"));
+	    }     
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	    LocalDateTime order_date_format = LocalDateTime.parse(order_date, formatter);
+	    LocalDateTime delivery_date_format = LocalDateTime.parse(targetDeliveryDate, formatter);
+	    long minutesBetween = ChronoUnit.MINUTES.between(order_date_format,delivery_date_format);
+	    int timeTaken = (int) minutesBetween;
+	    
+	    order.setTimeTaken(timeTaken);
+		
 		orderDao.save(order);
 		courierDao.save(courier);
 		return new SuccessResult("Order end successfully");

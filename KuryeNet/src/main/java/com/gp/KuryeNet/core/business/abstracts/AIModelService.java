@@ -11,5 +11,7 @@ public interface AIModelService {
 	DataResult<AIModelPredictionResponse> getPrediction(String courierEmail,int orderId);
 	
 	Result writeData(String courierEmail, int orderId);
+	
+	void setData(String courierEmail, int orderId);
 
 }

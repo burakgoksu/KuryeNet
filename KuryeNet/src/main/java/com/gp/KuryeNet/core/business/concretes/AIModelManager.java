@@ -2,6 +2,7 @@ package com.gp.KuryeNet.core.business.concretes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import com.gp.KuryeNet.core.business.abstracts.AIModelService;
 import com.gp.KuryeNet.core.business.abstracts.check.GoogleMapsAPICheckService;
 import com.gp.KuryeNet.core.entities.AIModelPredictionRequest;
 import com.gp.KuryeNet.core.entities.AIModelPredictionResponse;
+import com.gp.KuryeNet.core.entities.AIModelWriteDataRequest;
 import com.gp.KuryeNet.core.entities.WeatherResponse;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
@@ -28,12 +30,10 @@ import com.gp.KuryeNet.dataAccess.abstracts.CustomerDao;
 import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
 import com.gp.KuryeNet.entities.concretes.Order;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -67,15 +67,20 @@ public class AIModelManager implements AIModelService{
     String Weather_Condition = null;
     int Distance = 0;
     String Road_Traffic_Density = null;
+    String Order_Date = null;
+    String Time_Ordered = null;
+    long Time_Taken = 0;
+    double Restaurant_Latitude = 0.0;
+    double Restaurant_Longitude = 0.0;
+    double Delivery_Location_Latitude = 0.0;
+    double Delivery_Location_Longitude = 0.0;
     
     double Prediction = 0.0;
     int PredictionRound = 0;
-
-	
-
-	@Async
+    
 	@Override
-	public SuccessDataResult<AIModelPredictionResponse> getPrediction(String courierEmail, int orderId) {
+	@Async
+	public void setData(String courierEmail, int orderId) {
 		
 		Order order = orderDao.getByOrderId(orderId);
 		Courier courier = courierDao.getByCourierEmail(courierEmail);
@@ -144,7 +149,13 @@ public class AIModelManager implements AIModelService{
 		//Day_Type
 
 	    final List<String> holidays = Arrays.asList("01-01-2024", "23-04-2024", "01-05-2024", "09-04-2024", "10-04-2024","11-04-2024","12-04-2024","19-05-2024", "15-06-2024","16-06-2024","17-06-2024","18-06-2024","19-06-2024","15-07-2024", "30-08-2024", "29-10-2024","31-12-2024");
-	    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+	    
+        if (orderDate.contains(".")) {
+        	orderDate = orderDate.substring(0, orderDate.lastIndexOf("."));
+	    }
+        
+	    
+	    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	    // Gelen tarih formatını DateTimeFormatter ile tanımla
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); // Çıkış formatı
         // Gelen tarihi parse et
@@ -194,7 +205,41 @@ public class AIModelManager implements AIModelService{
         }
         
         
-        //Distance
+        //Order_Date
+        //Time_Ordered
+        
+        Order_Date = orderDate.split(" ")[0];
+        
+        if (orderDate.contains(".")) {
+        	orderDate = orderDate.substring(0, orderDate.lastIndexOf("."));
+        }
+        
+        Time_Ordered = orderDate.split(" ")[1];
+        
+        // Restaurant_Latitude
+        // Restaurant_Longitude
+        // Delivery_Location_Latitude
+        // Delivery_Location_Longitude
+        
+        Restaurant_Latitude = order.getProvider().getProviderLatitude();
+        Restaurant_Longitude = order.getProvider().getProviderLongitude();
+        
+        Delivery_Location_Latitude = order.getCustomer().getCustomerLatitude();
+        Delivery_Location_Longitude = order.getCustomer().getCustomerLongitude();
+        
+        
+        
+		
+	}
+
+
+	@Async
+	@Override
+	public SuccessDataResult<AIModelPredictionResponse> getPrediction(String courierEmail, int orderId) {
+		
+		setData(courierEmail,orderId);
+		
+		//Distance
         //Road_Traffic_Density
         
         GoogleMapsAPIManager googleMapsAPIManager = new GoogleMapsAPIManager(courierDao,customerDao,restTemplate,orderDao,googleMapsAPICheckService);
@@ -236,6 +281,9 @@ public class AIModelManager implements AIModelService{
 			e.printStackTrace();
 		}
         
+		
+		Order order = orderDao.getByOrderId(orderId);
+        
         AIModelPredictionRequest aiModelPredictionRequest = new AIModelPredictionRequest();
         aiModelPredictionRequest.setCity(City);
         aiModelPredictionRequest.setDay_Type(Day_Type);
@@ -252,7 +300,7 @@ public class AIModelManager implements AIModelService{
         try {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper objectMapper = new ObjectMapper();
-            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/predict"; // API'nizin URL'si
+            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/predict";
 
             // AIModelPredictionRequest nesnesini JSON string'ine dönüştür
             String jsonRequest = objectMapper.writeValueAsString(aiModelPredictionRequest);
@@ -290,8 +338,74 @@ public class AIModelManager implements AIModelService{
 	@Async
 	@Override
 	public Result writeData(String courierEmail, int orderId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		setData(courierEmail,orderId);
+		
+		Order order = orderDao.getByOrderId(orderId);
+		       
+        Time_Taken = order.getTimeTaken();
+				
+		AIModelWriteDataRequest aiModelWriteDataRequest = new AIModelWriteDataRequest();
+		aiModelWriteDataRequest.setCity(City);
+		aiModelWriteDataRequest.setDay_Type(Day_Type);
+		aiModelWriteDataRequest.setDelivery_Person_Age(Delivery_Person_Age);
+		aiModelWriteDataRequest.setDistance(Distance);
+		aiModelWriteDataRequest.setMultiple_Deliveries(Multiple_Deliveries);
+		aiModelWriteDataRequest.setRoad_Traffic_Density(Road_Traffic_Density);
+        aiModelWriteDataRequest.setTime_Category(Time_Category);
+        aiModelWriteDataRequest.setType_Of_Order(Type_Of_Order);
+        aiModelWriteDataRequest.setType_Of_Vehicle(Type_Of_Vehicle);
+        aiModelWriteDataRequest.setWeather_Condition(Weather_Condition);
+        aiModelWriteDataRequest.setOrder_Date(Order_Date);
+        aiModelWriteDataRequest.setTime_Ordered(Time_Ordered);
+        aiModelWriteDataRequest.setTime_Taken(Time_Taken);
+        aiModelWriteDataRequest.setRestaurant_Latitude(Restaurant_Latitude);
+        aiModelWriteDataRequest.setRestaurant_Longitude(Restaurant_Longitude);
+        aiModelWriteDataRequest.setDelivery_Location_Latitude(Delivery_Location_Latitude);
+        aiModelWriteDataRequest.setDelivery_Location_Longitude(Delivery_Location_Longitude);
+        
+        ResponseEntity<String> responseWriteData = null;
+        
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/write_data";
+
+            // AIModelPredictionRequest nesnesini JSON string'ine dönüştür
+            String jsonRequest = objectMapper.writeValueAsString(aiModelWriteDataRequest);
+
+            // HTTP Header ayarları
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBasicAuth("YWRtaW46YWRtaW4=");
+
+            // HttpEntity oluştur
+            HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
+
+            // POST isteğini gönder ve yanıtı al
+            responseWriteData = restTemplate.postForEntity(apiUrl, entity, String.class);
+            
+
+                 
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+        String responseWriteData_message = null;
+        
+        try {
+			JSONObject responseWriteData_json = new JSONObject(responseWriteData.getBody());
+			responseWriteData_message = responseWriteData_json.getString("message");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+        
+		return new Result(true,responseWriteData_message);
+        
 	}
+
+
+
 
 }

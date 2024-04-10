@@ -100,6 +100,9 @@ public class Order {
 	@Column(name="delivery_minutes_ai")
 	private int deliveryMinutesAI;
 	
+	@Column(name="time_taken")
+	private int timeTaken;
+	
 	@ManyToOne()
 	@JoinColumn(name="courier_id")
 	private Courier courier;
