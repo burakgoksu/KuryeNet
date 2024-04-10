@@ -26,6 +26,7 @@ import com.gp.KuryeNet.business.abstracts.check.AddressCheckService;
 import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
 import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
 import com.gp.KuryeNet.business.abstracts.check.VehicleCheckService;
+import com.gp.KuryeNet.core.business.abstracts.AIModelService;
 import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
@@ -53,6 +54,7 @@ public class CourierManager implements CourierService{
 	private OrderCheckService orderCheckService;
 	private AddressCheckService addressCheckService;
 	private VehicleCheckService vehicleCheckService;
+	private AIModelService aiModelService;
 	
 	@Autowired
 	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService) {
@@ -162,6 +164,7 @@ public class CourierManager implements CourierService{
 		order.setOrderStatus(200);
 		orderDao.save(order);
 		courierDao.save(courier);
+		aiModelService.getPrediction(courierEmail, orderId);
 		return new SuccessResult("Order start successfully");
 	}
 	
@@ -233,6 +236,7 @@ public class CourierManager implements CourierService{
 		
 		orderDao.save(order);
 		courierDao.save(courier);
+		aiModelService.writeData(courierEmail, orderId);
 		return new SuccessResult("Order end successfully");
 	}
 
