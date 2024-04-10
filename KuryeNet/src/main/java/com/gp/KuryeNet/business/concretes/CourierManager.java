@@ -57,7 +57,7 @@ public class CourierManager implements CourierService{
 	private AIModelService aiModelService;
 	
 	@Autowired
-	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService) {
+	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService,AIModelService aiModelService) {
 		super();
 		this.courierDao = courierDao;
 		this.courierCheckService = courierCheckService;
@@ -65,6 +65,7 @@ public class CourierManager implements CourierService{
 		this.orderCheckService = orderCheckService;
 		this.addressCheckService = addressCheckService;
 		this.vehicleCheckService = vehicleCheckService;
+		this.aiModelService = aiModelService;
 	}
 
 	@Override
