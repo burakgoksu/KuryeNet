@@ -7,11 +7,13 @@ import java.text.*;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","customerBasket"})
 public class Order {
 	
 	@Id
@@ -118,6 +120,9 @@ public class Order {
 	@ManyToOne()
 	@JoinColumn(name="customer_id")
 	private Customer customer;
+	
+	@OneToMany(mappedBy="order", fetch = FetchType.EAGER)
+	private List<CustomerBasket> customerBasket;
 	
 	
 }

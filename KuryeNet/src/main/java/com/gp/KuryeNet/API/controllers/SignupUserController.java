@@ -30,15 +30,27 @@ public class SignupUserController {
 		this.authService = authService;
 	}
 	
-	@PostMapping("/register")
-	public Mono<ResponseEntity<?>> createUser(@RequestBody SignupDto signupDto){
+	@PostMapping("/registerCourier")
+	public Mono<ResponseEntity<?>> createUserCourier(@RequestBody SignupDto signupDto){
 		return Mono.fromCallable(()->{
 	//		UserDto createdUser = authService.createUser(signupDto);
 	//		if(createdUser == null)
 	//			return new ResponseEntity<>("User is not created",HttpStatus.BAD_REQUEST);
 	//		return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
 			
-			return this.authService.createUser(signupDto);
+			return this.authService.createUserCourier(signupDto);
+		}).map(result -> Utils.getResponseEntity(result));
+	}
+	
+	@PostMapping("/registerCustomer")
+	public Mono<ResponseEntity<?>> createUserCustomer(@RequestBody SignupDto signupDto){
+		return Mono.fromCallable(()->{
+	//		UserDto createdUser = authService.createUser(signupDto);
+	//		if(createdUser == null)
+	//			return new ResponseEntity<>("User is not created",HttpStatus.BAD_REQUEST);
+	//		return new ResponseEntity<>(createdUser,HttpStatus.CREATED);
+			
+			return this.authService.createUserCustomer(signupDto);
 		}).map(result -> Utils.getResponseEntity(result));
 	}
 	

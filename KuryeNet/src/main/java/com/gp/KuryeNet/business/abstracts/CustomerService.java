@@ -2,6 +2,7 @@ package com.gp.KuryeNet.business.abstracts;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
@@ -16,6 +17,10 @@ public interface CustomerService {
 	DataResult<List<Customer>> getAllSortedByCustomerName();
 
 	Result add(Customer customer);
+	
+	Result update(String customerEmail, Customer customer);
+	
+	<T> void updateIfNotNull(Consumer<T> setter, T value);
 	
 	DataResult<Customer> getByCustomerId(int customerId);
 	

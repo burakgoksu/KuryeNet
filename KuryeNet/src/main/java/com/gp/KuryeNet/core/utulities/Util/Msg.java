@@ -27,6 +27,7 @@ public enum Msg {
     REQUESTED("has already been requested by another company"),
     NOT_HAVE("does not have this"),
     NOT_EXIST("does not exist"),
+    EXISTS("is already exist"),
     NOT_FOUND("not found"),
     IS_THE_SAME("is the same as before"),
     THE_SAME("the same as before"),

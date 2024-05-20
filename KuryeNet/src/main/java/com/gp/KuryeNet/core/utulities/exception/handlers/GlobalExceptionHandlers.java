@@ -1,6 +1,8 @@
 package com.gp.KuryeNet.core.utulities.exception.handlers;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -18,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -62,6 +66,17 @@ public class GlobalExceptionHandlers extends ResponseEntityExceptionHandler{
         }
         ApiError apiError = new ApiError(Msg.INVALID.getCustom("%s input(s)"), errors, null);
         return ResponseEntity.badRequest().body(new ErrorDataResult<>(apiError, Msg.FAILED.get()));
+    }
+    
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handleUsernameNotFoundException(BadCredentialsException ex) {
+    	ex.printStackTrace();
+        Map<String, String> errors = new LinkedHashMap<>();
+        errors.put(ex.getClass().toString(),ex.getSuppressed().toString());
+        Set<String> details = new HashSet<String>();
+        details.add("Check your credential information");
+        ApiError apiError = new ApiError(ex.getMessage(),errors,details);
+        return ResponseEntity.badRequest().body(new ErrorDataResult<>(apiError,"Login " + Msg.FAILED.get()));
     }
 
     @ExceptionHandler({EntityNotExistsException.class})

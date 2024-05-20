@@ -4,13 +4,11 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -25,35 +23,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler","userRoles"})
-@Table(name="users")
-public class User {
+@Table(name="roles")
+public class Role {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
-	private int id;
+	@Column(name="role_id")
+	private int roleId;
 	
-	@Column(name="name")
+	@Column(name="role_name")
 	@NotBlank
 	@NotNull
-	private String name;
+	private String roleName;
 	
-	@Column(name="email")
-	@Email
-	@NotBlank
-	@NotNull
-	private String email;
-	
-	@Column(name="password")
-	@NotBlank
-	@NotNull
-	private String password;
-	
-	@Column(name="surname")
-	@NotBlank
-	@NotNull
-	private String surname;
-	
-	@OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="role")
 	private List<UserRole> userRoles;
 
 }

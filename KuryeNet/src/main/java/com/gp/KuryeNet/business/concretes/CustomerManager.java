@@ -1,6 +1,8 @@
 package com.gp.KuryeNet.business.concretes;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +61,37 @@ public class CustomerManager implements CustomerService{
 		else this.customerDao.save(customer);
 		
 		return new SuccessResult("customer added");
+	}
+	
+	public <T> void updateIfNotNull(Consumer<T> setter, T value) {
+	    Optional.ofNullable(value).ifPresent(setter);
+	}
+	
+	@Override
+	public Result update(String customerEmail,Customer customer) {
+		//customerCheckService.existsByCustomerEmail(customer.getCustomerEmail());
+		//ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(customerCheckService);
+		//if(errors!=null) return errors;
+		//else 
+
+	    Customer oldCustomer = customerDao.getByCustomerEmail(customerEmail);
+	    
+	    updateIfNotNull(oldCustomer::setCustomerName, customer.getCustomerName());
+	    updateIfNotNull(oldCustomer::setCustomerSurname, customer.getCustomerSurname());
+	    updateIfNotNull(oldCustomer::setCustomerBirthday, customer.getCustomerBirthday());
+	    updateIfNotNull(oldCustomer::setCustomerAddress, customer.getCustomerAddress());
+	    updateIfNotNull(oldCustomer::setCustomerLatitude, customer.getCustomerLatitude());
+	    updateIfNotNull(oldCustomer::setCustomerLongitude, customer.getCustomerLongitude());
+	    updateIfNotNull(oldCustomer::setCustomerEmail, customer.getCustomerEmail());
+
+	    if (customer.getOrders() != null && !customer.getOrders().isEmpty()) {
+	        oldCustomer.setOrders(customer.getOrders());
+	    }
+
+		
+		this.customerDao.save(oldCustomer);
+		
+		return new SuccessResult("customer updated");
 	}
 
 	@Override

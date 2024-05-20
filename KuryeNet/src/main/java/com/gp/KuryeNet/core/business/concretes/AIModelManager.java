@@ -371,18 +371,16 @@ public class AIModelManager implements AIModelService{
             ObjectMapper objectMapper = new ObjectMapper();
             String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/write_data";
 
-            // AIModelPredictionRequest nesnesini JSON string'ine dönüştür
             String jsonRequest = objectMapper.writeValueAsString(aiModelWriteDataRequest);
 
-            // HTTP Header ayarları
+            // HTTP Header 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBasicAuth("YWRtaW46YWRtaW4=");
 
-            // HttpEntity oluştur
+            // Http Entity 
             HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
 
-            // POST isteğini gönder ve yanıtı al
             responseWriteData = restTemplate.postForEntity(apiUrl, entity, String.class);
             
 

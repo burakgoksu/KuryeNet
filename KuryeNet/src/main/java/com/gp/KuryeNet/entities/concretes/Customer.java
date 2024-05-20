@@ -3,8 +3,12 @@ package com.gp.KuryeNet.entities.concretes;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -19,6 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gp.KuryeNet.core.entities.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,11 +34,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="customers")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","address","addressTitle","city","district","street","buildingNumber","floorNumber","apartmentNumber","phoneNumber"})
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","orders","address","addressTitle","city","district","street","buildingNumber","floorNumber","apartmentNumber","phoneNumber","customerBasket"})
 public class Customer {
 	
 	@Id
 	@Column(name="customer_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int customerId;
 	
 //	@Column(name="address_id")
@@ -69,9 +75,12 @@ public class Customer {
 	@OneToMany(mappedBy="customer")
 	private List<Order> orders;
 	
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="address_id")
 	private Address customerAddress; 	
+	
+	@OneToMany(mappedBy="customer", fetch = FetchType.EAGER)
+	private List<CustomerBasket> customerBasket;
 	
 //	@ManyToMany
 //    @JoinTable(name = "cvs_skills",

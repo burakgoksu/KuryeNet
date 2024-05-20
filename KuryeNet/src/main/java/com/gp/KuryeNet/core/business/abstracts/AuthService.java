@@ -6,5 +6,7 @@ import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 
 public interface AuthService {
-	 Result createUser(SignupDto signupDto);
+	 Result createUserCourier(SignupDto signupDto);
+	 
+	 Result createUserCustomer(SignupDto signupDto);
 }
