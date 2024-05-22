@@ -36,7 +36,7 @@ public class WebSecurityConfiguration {
 				.antMatchers("/auth/**","/authentication/**","/api/customers/add").permitAll()
 				.and()
 				.authorizeHttpRequests()
-				.antMatchers("/api/customersbaskets/add","api/customers/getByCustomerEmail")
+				.antMatchers("/api/customersbaskets/add","/api/customers/**")
 				.hasAnyRole("CUSTOMER","ADMIN")
 				.and()
 				.authorizeHttpRequests()
