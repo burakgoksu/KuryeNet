@@ -7,5 +7,5 @@ public interface CustomerBasketCheckService extends BaseCheckService{
 	Map<String, String> getErrors();
 	
     void existsOrderByNumber(String orderNumber);
-
+    
 }

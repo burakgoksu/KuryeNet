@@ -23,10 +23,12 @@ public class OrderCheckManager extends BaseCheckManager implements OrderCheckSer
 	}
 
 	@Override
-	@SneakyThrows
+	//@SneakyThrows
 	public void existsOrderById(int orderId) {
-		if(CheckUtils.notExistsById(orderDao, orderId))
-			throw new EntityNotExistsException(Msg.NOT_EXIST.get("Order"));
+		//if(CheckUtils.notExistsById(orderDao, orderId))
+		//	throw new EntityNotExistsException(Msg.NOT_EXIST.get("Order"));
+		if(!orderDao.existsById(orderId))
+			errors.put("orderId", Msg.NOT_EXIST.get("Order"));
 		
 	}
 
