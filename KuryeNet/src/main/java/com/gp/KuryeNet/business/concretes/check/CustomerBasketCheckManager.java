@@ -23,8 +23,8 @@ private CustomerBasketDao customerBasketDao;
 
 	@Override
 	public void existsOrderByNumber(String orderNumber) {
-		if(customerBasketDao.existsByOrder_OrderNumber(orderNumber))
-			errors.put("Order Number", Msg.EXISTS.get());
+		if(!customerBasketDao.existsByOrder_OrderNumber(orderNumber))
+			errors.put("Order Number", Msg.EXISTS.get()+ " or false");
 		
 	}
 
