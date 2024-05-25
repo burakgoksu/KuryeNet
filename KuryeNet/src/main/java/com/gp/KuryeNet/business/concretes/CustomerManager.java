@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
 import com.gp.KuryeNet.dataAccess.abstracts.CustomerDao;
+import com.gp.KuryeNet.entities.concretes.Address;
 import com.gp.KuryeNet.entities.concretes.Customer;
 
 @Service
@@ -75,6 +77,7 @@ public class CustomerManager implements CustomerService{
 	}
 	
 	@Override
+	@Transactional
 	public Result update(String customerEmail,Customer customer) {
 		//customerCheckService.existsByCustomerEmail(customer.getCustomerEmail());
 		//ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(customerCheckService);
@@ -82,8 +85,9 @@ public class CustomerManager implements CustomerService{
 		//else 
 		
 		if (customer.getCustomerAddress() != null && customer.getCustomerAddress().getAddressId() != 0) {
-		    customer.setCustomerAddress(entityManager.merge(customer.getCustomerAddress()));
-		}
+            Address mergedAddress = entityManager.merge(customer.getCustomerAddress());
+            customer.setCustomerAddress(mergedAddress);
+        }
 
 	    Customer oldCustomer = customerDao.getByCustomerEmail(customerEmail);
 	    
