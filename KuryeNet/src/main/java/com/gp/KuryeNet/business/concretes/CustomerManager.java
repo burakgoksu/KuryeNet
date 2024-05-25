@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,12 +30,16 @@ public class CustomerManager implements CustomerService{
 	
 	private CustomerDao customerDao;
 	private CustomerCheckService customerCheckService;
+	
+    @PersistenceContext
+    private EntityManager entityManager;
 
 	@Autowired
-	public CustomerManager(CustomerDao customerDao,CustomerCheckService customerCheckService) {
+	public CustomerManager(CustomerDao customerDao,CustomerCheckService customerCheckService, EntityManager entityManager) {
 		super();
 		this.customerDao = customerDao;
 		this.customerCheckService = customerCheckService;
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -73,6 +80,10 @@ public class CustomerManager implements CustomerService{
 		//ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(customerCheckService);
 		//if(errors!=null) return errors;
 		//else 
+		
+		if (customer.getCustomerAddress() != null && customer.getCustomerAddress().getAddressId() != 0) {
+		    customer.setCustomerAddress(entityManager.merge(customer.getCustomerAddress()));
+		}
 
 	    Customer oldCustomer = customerDao.getByCustomerEmail(customerEmail);
 	    
@@ -88,7 +99,6 @@ public class CustomerManager implements CustomerService{
 	        oldCustomer.setOrders(customer.getOrders());
 	    }
 
-		
 		this.customerDao.save(oldCustomer);
 		
 		return new SuccessResult("customer updated");
