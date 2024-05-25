@@ -8,4 +8,6 @@ public interface CustomerBasketCheckService extends BaseCheckService{
 	
     void existsOrderByNumber(String orderNumber);
     
+    void existsOrderByNumber2(String orderNumber);
+    
 }

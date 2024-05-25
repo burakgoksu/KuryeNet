@@ -3,7 +3,7 @@ package com.gp.KuryeNet.entities.concretes;
 import java.util.*;
 import java.text.*;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;

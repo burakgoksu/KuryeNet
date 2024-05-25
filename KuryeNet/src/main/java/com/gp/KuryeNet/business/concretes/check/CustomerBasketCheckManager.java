@@ -27,5 +27,13 @@ private CustomerBasketDao customerBasketDao;
 			errors.put("Order Number", Msg.EXISTS.get()+ " or false");
 		
 	}
+	
+	@Override
+	public void existsOrderByNumber2(String orderNumber) {
+		if(!customerBasketDao.existsByOrder_OrderNumber(orderNumber))
+			errors.put("Order Number", Msg.NOT_FOUND.get());
+		
+	}
+
 
 }

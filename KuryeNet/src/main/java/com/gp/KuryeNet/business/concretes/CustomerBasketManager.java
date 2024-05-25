@@ -92,6 +92,10 @@ public class CustomerBasketManager implements CustomerBasketService{
 
 	@Override
 	public Result delete(String orderNumber) {
+		customerBasketCheckService.existsOrderByNumber2(orderNumber);
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(customerBasketCheckService);
+		if(errors!=null) return errors;
+		
 		CustomerBasket customerBasket = customerBasketDao.getByOrder_OrderNumber(orderNumber);
 		customerBasketDao.delete(customerBasket);
 		return new SuccessResult("customerBasket deleted");
