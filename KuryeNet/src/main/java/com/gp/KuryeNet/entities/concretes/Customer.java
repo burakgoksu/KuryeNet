@@ -75,7 +75,7 @@ public class Customer {
 	@OneToMany(mappedBy="customer")
 	private List<Order> orders;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="address_id")
 	private Address customerAddress; 	
 	
