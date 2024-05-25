@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,14 @@ public class CustomerBasketsController {
 	    
 		return Utils.getResponseEntity(this.customerBasketService.add(customerEmail,orderNumber));
 		
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<?> delete(@RequestParam String orderNumber, HttpServletRequest request){
+		String token = jwtUtil.extractTokenFromRequest(request);
+		String customerEmail = jwtUtil.extractUsername(token);
+		
+		return Utils.getResponseEntity(this.customerBasketService.delete(orderNumber));
 	}
 	
 	@GetMapping("/getByOrderNumber")

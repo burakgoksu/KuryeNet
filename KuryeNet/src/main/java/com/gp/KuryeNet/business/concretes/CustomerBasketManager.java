@@ -90,4 +90,11 @@ public class CustomerBasketManager implements CustomerBasketService{
 		return new SuccessDataResult<List<CustomerBasket>>(this.customerBasketDao.getByCustomer_CustomerEmail(customerEmail));
 	}
 
+	@Override
+	public Result delete(String orderNumber) {
+		CustomerBasket customerBasket = customerBasketDao.getByOrder_OrderNumber(orderNumber);
+		customerBasketDao.delete(customerBasket);
+		return new SuccessResult("customerBasket deleted");
+	}
+
 }
