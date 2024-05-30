@@ -24,6 +24,8 @@ public interface CourierService {
 	
 	Result updateCourierCoordinates(String courierEmail, double latitude,double longitude);
 	
+	Result updateCourierCoordinatesSimulate(String courierEmail);
+	
 	Result startOrder(int orderId, String courierEmail);
 	
 	Result endOrder(int orderId, String courierEmail);

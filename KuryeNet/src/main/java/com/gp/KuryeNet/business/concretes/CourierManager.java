@@ -7,10 +7,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.transaction.Transactional;
 
@@ -55,6 +59,8 @@ public class CourierManager implements CourierService{
 	private AddressCheckService addressCheckService;
 	private VehicleCheckService vehicleCheckService;
 	private AIModelService aiModelService;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
 	
 	@Autowired
 	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService,AIModelService aiModelService) {
@@ -266,6 +272,52 @@ public class CourierManager implements CourierService{
 		return new SuccessDataResult<CourierWithOrderDto>(this.courierDao.getCourierWithOrderDetails(orderNumber),"CourierWithOrderDetails listed!");
 
 	}
+
+	@Override
+	public Result updateCourierCoordinatesSimulate(String courierEmail) {
+		List<double[]> coordinatesList = Arrays.asList(
+	            new double[]{40.975154, 29.134751},
+	            new double[]{40.975607, 29.134808},
+	            new double[]{40.976160, 29.134846},
+	            new double[]{40.976833, 29.134928},
+	            new double[]{40.976804, 29.135661},
+	            
+	            new double[]{40.976795, 29.136191},
+	            new double[]{40.976781, 29.136640},
+	            new double[]{40.976766, 29.137190},
+	            new double[]{40.976757, 29.137891},
+	            new double[]{40.976771, 29.138358}
+	        );
+
+	        Runnable updateTask = new Runnable() {
+	            private int index = 0;
+
+	            @Override
+	            public void run() {
+	                if (index < coordinatesList.size()) {
+	                    double[] coordinates = coordinatesList.get(index);
+	                    double latitude = coordinates[0];
+	                    double longitude = coordinates[1];
+
+	                    Courier courier = courierDao.getByCourierEmail(courierEmail);
+	                    if (courier != null) {
+	                        courier.setCourierLatitude(latitude);
+	                        courier.setCourierLongitude(longitude);
+	                        courierDao.save(courier);
+	                        System.out.println("Updated coordinates to: " + latitude + ", " + longitude);
+	                    }
+
+	                    index++;
+	                } else {
+	                    scheduler.shutdown();
+	                }
+	            }
+	        };
+
+	        scheduler.scheduleAtFixedRate(updateTask, 0, 5, TimeUnit.SECONDS);
+	        return new SuccessResult("Courier coordinates update task started successfully");
+	    }
+	
 
 
 }

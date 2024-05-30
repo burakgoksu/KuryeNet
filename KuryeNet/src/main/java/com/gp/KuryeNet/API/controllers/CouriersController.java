@@ -157,5 +157,15 @@ public class CouriersController {
 		}).map(result -> Utils.getResponseEntity(result));
 	}
 	
+	@PutMapping("/updateCourierCoordinatesSimulate")
+	public Mono<ResponseEntity<?>> updateCourierCoordinatesSimulate(HttpServletRequest request){
+		return Mono.fromCallable(()->{
+		    String token = jwtUtil.extractTokenFromRequest(request);
+		    String courierEmail = jwtUtil.extractUsername(token);
+		
+		    return this.courierService.updateCourierCoordinatesSimulate(courierEmail);
+		}).map(result -> Utils.getResponseEntity(result));
+	}
+	
 	
 }
