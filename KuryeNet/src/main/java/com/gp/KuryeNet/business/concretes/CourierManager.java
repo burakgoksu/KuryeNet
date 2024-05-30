@@ -31,10 +31,13 @@ import com.gp.KuryeNet.business.abstracts.check.CourierCheckService;
 import com.gp.KuryeNet.business.abstracts.check.OrderCheckService;
 import com.gp.KuryeNet.business.abstracts.check.VehicleCheckService;
 import com.gp.KuryeNet.core.business.abstracts.AIModelService;
+import com.gp.KuryeNet.core.business.abstracts.SchedulerService;
+import com.gp.KuryeNet.core.business.concretes.SchedulerManager;
 import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -59,11 +62,12 @@ public class CourierManager implements CourierService{
 	private AddressCheckService addressCheckService;
 	private VehicleCheckService vehicleCheckService;
 	private AIModelService aiModelService;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private SchedulerService schedulerService;
+	private SchedulerManager schedulerManager;
 
 	
 	@Autowired
-	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService,AIModelService aiModelService) {
+	public CourierManager(CourierDao courierDao, CourierCheckService courierCheckService,OrderDao orderDao,OrderCheckService orderCheckService,AddressCheckService addressCheckService,VehicleCheckService vehicleCheckService,AIModelService aiModelService,SchedulerService schedulerService,SchedulerManager schedulerManager) {
 		super();
 		this.courierDao = courierDao;
 		this.courierCheckService = courierCheckService;
@@ -72,6 +76,8 @@ public class CourierManager implements CourierService{
 		this.addressCheckService = addressCheckService;
 		this.vehicleCheckService = vehicleCheckService;
 		this.aiModelService = aiModelService;
+		this.schedulerService = schedulerService;
+		this.schedulerManager = schedulerManager;
 	}
 
 	@Override
@@ -289,34 +295,36 @@ public class CourierManager implements CourierService{
 	            new double[]{40.976771, 29.138358}
 	        );
 
-	        Runnable updateTask = new Runnable() {
-	            private int index = 0;
+		ScheduledExecutorService scheduler = schedulerManager.getScheduler();
 
-	            @Override
-	            public void run() {
-	                if (index < coordinatesList.size()) {
-	                    double[] coordinates = coordinatesList.get(index);
-	                    double latitude = coordinates[0];
-	                    double longitude = coordinates[1];
+        Runnable updateTask = new Runnable() {
+            private int index = 0;
 
-	                    Courier courier = courierDao.getByCourierEmail(courierEmail);
-	                    if (courier != null) {
-	                        courier.setCourierLatitude(latitude);
-	                        courier.setCourierLongitude(longitude);
-	                        courierDao.save(courier);
-	                        System.out.println("Updated coordinates to: " + latitude + ", " + longitude);
-	                    }
+            @Override
+            public void run() {
+                if (index < coordinatesList.size()) {
+                    double[] coordinates = coordinatesList.get(index);
+                    double latitude = coordinates[0];
+                    double longitude = coordinates[1];
 
-	                    index++;
-	                } else {
-	                    scheduler.shutdown();
-	                }
-	            }
-	        };
+                    Courier courier = courierDao.getByCourierEmail(courierEmail);
+                    if (courier != null) {
+                        courier.setCourierLatitude(latitude);
+                        courier.setCourierLongitude(longitude);
+                        courierDao.save(courier);
+                        System.out.println("Updated coordinates to: " + latitude + ", " + longitude);
+                    }
 
-	        scheduler.scheduleAtFixedRate(updateTask, 0, 5, TimeUnit.SECONDS);
-	        return new SuccessResult("Courier coordinates update task started successfully");
-	    }
+                    index++;
+                } else {
+                    schedulerService.shutdownScheduler();
+                }
+            }
+        };
+
+        scheduler.scheduleAtFixedRate(updateTask, 0, 5, TimeUnit.SECONDS);
+        return new SuccessResult("Courier coordinates update task started successfully");
+    }
 	
 
 
