@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import jakarta.validation.Valid;
 
 import com.gp.KuryeNet.core.business.abstracts.AuthService;
 import com.gp.KuryeNet.core.entities.SignupDto;
@@ -31,7 +32,7 @@ public class SignupUserController {
 	}
 	
 	@PostMapping("/registerCourier")
-	public Mono<ResponseEntity<?>> createUserCourier(@RequestBody SignupDto signupDto){
+	public Mono<ResponseEntity<?>> createUserCourier(@Valid @RequestBody SignupDto signupDto){
 		return Mono.fromCallable(()->{
 	//		UserDto createdUser = authService.createUser(signupDto);
 	//		if(createdUser == null)
@@ -43,7 +44,7 @@ public class SignupUserController {
 	}
 	
 	@PostMapping("/registerCustomer")
-	public Mono<ResponseEntity<?>> createUserCustomer(@RequestBody SignupDto signupDto){
+	public Mono<ResponseEntity<?>> createUserCustomer(@Valid @RequestBody SignupDto signupDto){
 		return Mono.fromCallable(()->{
 	//		UserDto createdUser = authService.createUser(signupDto);
 	//		if(createdUser == null)

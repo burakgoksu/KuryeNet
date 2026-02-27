@@ -1,10 +1,13 @@
 package com.gp.KuryeNet.business.concretes;
 
 import java.util.List;
+import java.time.Instant;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,9 +21,11 @@ import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
+import com.gp.KuryeNet.core.utulities.security.SecurityUtils;
 import com.gp.KuryeNet.dataAccess.abstracts.AddressDao;
 import com.gp.KuryeNet.entities.concretes.Address;
 
@@ -58,6 +63,7 @@ public class AddressManager implements AddressService{
 	@Async
 	@Transactional
 	@Override
+	@CacheEvict(cacheNames = {"addressesById","addressesByTitle","addressesByPhone","addressesByCity","addressesSortedByCity"}, allEntries = true)
 	public Result add(Address address) {
 		addressCheckService.existsPhoneNumber(address.getPhoneNumber());
 		addressCheckService.validPhoneNumber(address.getPhoneNumber());
@@ -68,25 +74,58 @@ public class AddressManager implements AddressService{
 	}
 
 	@Override
+	@Cacheable(cacheNames = "addressesByTitle", key = "#addressTitle")
 	public DataResult<List<Address>> getByAddressTitle(String addressTitle) {
 		return new SuccessDataResult<List<Address>>(this.addressDao.getByAddressTitle(addressTitle));
 	}
 
 	@Override
+	@Cacheable(cacheNames = "addressesByPhone", key = "#phoneNumber")
 	public DataResult<List<Address>> getByPhoneNumber(String phoneNumber) {    
 		return new SuccessDataResult<List<Address>>(this.addressDao.getByPhoneNumber(phoneNumber));
 	}
 
 	@Override
+	@Cacheable(cacheNames = "addressesByCity", key = "#city")
 	public DataResult<List<Address>> getByCity(String city) {
 		return new SuccessDataResult<List<Address>>(this.addressDao.getByCity(city));
 
 	}
 
 	@Override
+	@Cacheable(cacheNames = "addressesById", key = "#addressId")
 	public DataResult<Address> getByAddressId(int addressId) {
 		addressCheckService.existsAddressById(addressId);
 		return new SuccessDataResult<Address>(this.addressDao.getByAddressId(addressId));
+	}
+
+	@Override
+	@CacheEvict(cacheNames = {"addressesById","addressesByTitle","addressesByPhone","addressesByCity","addressesSortedByCity"}, allEntries = true)
+	public Result delete(int addressId) {
+		addressCheckService.existsAddressById(addressId);
+		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(addressCheckService);
+		if (errors != null) return errors;
+
+		int updated = addressDao.softDeleteById(addressId, Instant.now(), SecurityUtils.resolveCurrentUser());
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("address deleted");
+	}
+
+	@Override
+	@CacheEvict(cacheNames = {"addressesById","addressesByTitle","addressesByPhone","addressesByCity","addressesSortedByCity"}, allEntries = true)
+	public Result restore(int addressId) {
+		int updated = addressDao.restoreById(addressId);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("address restored");
+	}
+
+	@Override
+	public DataResult<List<Address>> getDeleted() {
+		return new SuccessDataResult<List<Address>>(addressDao.getDeleted());
 	}
 
 }

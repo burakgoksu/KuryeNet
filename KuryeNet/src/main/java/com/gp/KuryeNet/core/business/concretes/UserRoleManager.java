@@ -1,8 +1,9 @@
 package com.gp.KuryeNet.core.business.concretes;
 
 import java.util.List;
+import java.time.Instant;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +23,11 @@ import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
+import com.gp.KuryeNet.core.utulities.security.SecurityUtils;
 import com.gp.KuryeNet.dataAccess.abstracts.AddressDao;
 import com.gp.KuryeNet.entities.concretes.Address;
 
@@ -72,5 +75,27 @@ public class UserRoleManager implements UserRoleService{
 		return new SuccessDataResult<List<UserRole>>(this.userRoleDao.getByUser_Email(userEmail));
 	}
 
+	@Override
+	public Result delete(int userRoleId) {
+		int updated = userRoleDao.softDeleteById(userRoleId, Instant.now(), SecurityUtils.resolveCurrentUser());
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("userRole deleted");
+	}
+
+	@Override
+	public Result restore(int userRoleId) {
+		int updated = userRoleDao.restoreById(userRoleId);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("userRole restored");
+	}
+
+	@Override
+	public DataResult<List<UserRole>> getDeleted() {
+		return new SuccessDataResult<List<UserRole>>(userRoleDao.getDeleted());
+	}
 
 }

@@ -1,6 +1,6 @@
 package com.gp.KuryeNet.core.entities;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 
 import lombok.AllArgsConstructor;

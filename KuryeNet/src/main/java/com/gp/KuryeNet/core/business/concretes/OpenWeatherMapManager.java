@@ -1,6 +1,6 @@
 package com.gp.KuryeNet.core.business.concretes;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -9,12 +9,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gp.KuryeNet.core.business.abstracts.OpenWeatherMapService;
+import com.gp.KuryeNet.core.clients.ExternalApiClient;
 import com.gp.KuryeNet.core.entities.WeatherResponse;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
@@ -27,11 +27,13 @@ import com.gp.KuryeNet.entities.concretes.Courier;
 public class OpenWeatherMapManager implements OpenWeatherMapService{
 	
 	private CourierDao courierDao;
+	private ExternalApiClient externalApiClient;
 
 	@Autowired
-	public OpenWeatherMapManager(CourierDao courierDao) {
+	public OpenWeatherMapManager(CourierDao courierDao, ExternalApiClient externalApiClient) {
 		super();
 		this.courierDao = courierDao;
+		this.externalApiClient = externalApiClient;
 	}
 
 	@Async
@@ -45,8 +47,6 @@ public class OpenWeatherMapManager implements OpenWeatherMapService{
 		double courierlat = courier.getCourierLatitude();
 		double courierlong = courier.getCourierLongitude();
 		
-		RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
 
         String url = "https://api.openweathermap.org/data/3.0/onecall";
@@ -57,7 +57,7 @@ public class OpenWeatherMapManager implements OpenWeatherMapService{
 
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+        ResponseEntity<String> response = externalApiClient.getOpenWeather(builder.toUriString(), requestEntity);
         
         String weatherCondition = null;
         

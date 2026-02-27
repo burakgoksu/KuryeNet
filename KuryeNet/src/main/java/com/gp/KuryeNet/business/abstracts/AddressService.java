@@ -15,6 +15,12 @@ public interface AddressService {
 	DataResult<List<Address>> getAllSortedByCity();
 
 	Result add(Address address);
+
+	Result delete(int addressId);
+
+	Result restore(int addressId);
+
+	DataResult<List<Address>> getDeleted();
 	
 	DataResult<Address> getByAddressId(int addressId);
 	

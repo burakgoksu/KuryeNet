@@ -17,6 +17,12 @@ public interface CustomerService {
 	DataResult<List<Customer>> getAllSortedByCustomerName();
 
 	Result add(Customer customer);
+
+	Result delete(int customerId);
+
+	Result restore(int customerId);
+
+	DataResult<List<Customer>> getDeleted();
 	
 	Result update(String customerEmail, Customer customer);
 	

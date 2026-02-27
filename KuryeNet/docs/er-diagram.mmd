@@ -1,0 +1,103 @@
+erDiagram
+    ADDRESS ||--o{ ORDER : has
+    ADDRESS ||--o{ COURIER : has
+    ADDRESS ||--o{ PROVIDER : has
+    ADDRESS ||--o{ CUSTOMER : has
+
+    VEHICLE ||--o{ COURIER : uses
+
+    COURIER ||--o{ ORDER : delivers
+    PROVIDER ||--o{ ORDER : provides
+    CUSTOMER ||--o{ ORDER : places
+
+    ORDER ||--o{ CUSTOMER_BASKET : contains
+    CUSTOMER ||--o{ CUSTOMER_BASKET : owns
+
+    USER ||--o{ USER_ROLE : has
+    ROLE ||--o{ USER_ROLE : has
+
+    ADDRESS {
+        int address_id PK
+        string address
+        string address_title
+        string city
+        string district
+        string street
+        string phone_number
+    }
+
+    ORDER {
+        int order_id PK
+        string order_number
+        datetime order_date
+        datetime delivery_date
+        string order_type
+        int order_status
+        int ordered_platform
+        int remaining_minutes
+        int remaining_distance
+        int delivery_minutes_ai
+        int time_taken
+    }
+
+    COURIER {
+        int courier_id PK
+        string name
+        string surname
+        string email
+        string identity_number
+        date birthday
+        int status
+        double latitude
+        double longitude
+    }
+
+    CUSTOMER {
+        int customer_id PK
+        string name
+        string surname
+        string email
+        date birthday
+        double latitude
+        double longitude
+    }
+
+    PROVIDER {
+        int provider_id PK
+        string provider_type
+        string provider_name
+        string mersis_no
+        double latitude
+        double longitude
+    }
+
+    VEHICLE {
+        int vehicle_id PK
+        int vehicle_year
+        string vehicle_type
+        string vehicle_brand
+        string vehicle_model
+        string vehicle_emission
+        string vehicle_plate
+    }
+
+    CUSTOMER_BASKET {
+        int customer_basket_id PK
+    }
+
+    USER {
+        int id PK
+        string name
+        string surname
+        string email
+        string password
+    }
+
+    ROLE {
+        int role_id PK
+        string role_name
+    }
+
+    USER_ROLE {
+        int user_role_id PK
+    }

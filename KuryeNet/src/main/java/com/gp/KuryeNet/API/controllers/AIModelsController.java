@@ -1,6 +1,6 @@
 package com.gp.KuryeNet.API.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import com.gp.KuryeNet.core.utulities.jwt.JwtUtil;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/aimodel")
+@RequestMapping(path = { "${api.base-path:/api}/aimodel", "${api.versioned-base-path:/api/v1}/aimodel" })
 public class AIModelsController {
 	
 	private AIModelService aiModelService;
@@ -50,3 +50,4 @@ public class AIModelsController {
 	
 
 }
+

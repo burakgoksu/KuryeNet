@@ -14,11 +14,13 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gp.KuryeNet.core.business.abstracts.AIModelService;
+import com.gp.KuryeNet.core.business.abstracts.GoogleMapsAPIService;
+import com.gp.KuryeNet.core.business.abstracts.OpenWeatherMapService;
 import com.gp.KuryeNet.core.business.abstracts.check.GoogleMapsAPICheckService;
+import com.gp.KuryeNet.core.clients.ExternalApiClient;
 import com.gp.KuryeNet.core.entities.AIModelPredictionRequest;
 import com.gp.KuryeNet.core.entities.AIModelPredictionResponse;
 import com.gp.KuryeNet.core.entities.AIModelWriteDataRequest;
@@ -43,18 +45,23 @@ public class AIModelManager implements AIModelService{
 	private CourierDao courierDao;
 	private OrderDao orderDao;
 	private GoogleMapsAPICheckService googleMapsAPICheckService;
-	private RestTemplate restTemplate;
 	private CustomerDao customerDao;
+	private OpenWeatherMapService openWeatherMapService;
+	private GoogleMapsAPIService googleMapsAPIService;
+	private ExternalApiClient externalApiClient;
 	
 	@Autowired
 	public AIModelManager(CourierDao courierDao, OrderDao orderDao, GoogleMapsAPICheckService googleMapsAPICheckService,
-			RestTemplate restTemplate, CustomerDao customerDao) {
+			CustomerDao customerDao, OpenWeatherMapService openWeatherMapService,
+			GoogleMapsAPIService googleMapsAPIService, ExternalApiClient externalApiClient) {
 		super();
 		this.courierDao = courierDao;
 		this.orderDao = orderDao;
 		this.googleMapsAPICheckService = googleMapsAPICheckService;
-		this.restTemplate = restTemplate;
 		this.customerDao = customerDao;
+		this.openWeatherMapService = openWeatherMapService;
+		this.googleMapsAPIService = googleMapsAPIService;
+		this.externalApiClient = externalApiClient;
 	}
 	
 	int Delivery_Person_Age = 0;
@@ -195,8 +202,7 @@ public class AIModelManager implements AIModelService{
         //Weather_Condition
 
         
-        OpenWeatherMapManager openWeatherMapManager = new OpenWeatherMapManager(courierDao);
-        SuccessDataResult<WeatherResponse> result = (SuccessDataResult<WeatherResponse>) openWeatherMapManager.getWeather(courierEmail);
+        SuccessDataResult<WeatherResponse> result = (SuccessDataResult<WeatherResponse>) openWeatherMapService.getWeather(courierEmail);
         WeatherResponse weatherResponse = result.getData();
         Weather_Condition = weatherResponse.getWeatherCondition();
         
@@ -242,8 +248,7 @@ public class AIModelManager implements AIModelService{
 		//Distance
         //Road_Traffic_Density
         
-        GoogleMapsAPIManager googleMapsAPIManager = new GoogleMapsAPIManager(courierDao,customerDao,restTemplate,orderDao,googleMapsAPICheckService);
-        SuccessDataResult<String> result2 = (SuccessDataResult<String>) googleMapsAPIManager.getDirectionsFromGoogleMaps(courierEmail, orderId);
+        SuccessDataResult<String> result2 = (SuccessDataResult<String>) googleMapsAPIService.getDirectionsFromGoogleMaps(courierEmail, orderId);
         try {
 			JSONObject jsonObject= new JSONObject(result2.getData());
 	        JSONArray routes = jsonObject.getJSONArray("routes");
@@ -298,9 +303,8 @@ public class AIModelManager implements AIModelService{
         
         
         try {
-            RestTemplate restTemplate = new RestTemplate();
             ObjectMapper objectMapper = new ObjectMapper();
-            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/predict";
+            String apiUrl = "http://127.0.0.1:5000/predict";
 
             // AIModelPredictionRequest nesnesini JSON string'ine dönüştür
             String jsonRequest = objectMapper.writeValueAsString(aiModelPredictionRequest);
@@ -314,7 +318,7 @@ public class AIModelManager implements AIModelService{
             HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
 
             // POST isteğini gönder ve yanıtı al
-            ResponseEntity<String> responsePrediction = restTemplate.postForEntity(apiUrl, entity, String.class);
+            ResponseEntity<String> responsePrediction = externalApiClient.postAiModel(apiUrl, entity);
             
             JSONObject jsonObject= new JSONObject(responsePrediction.getBody());
             Prediction = jsonObject.getDouble("Prediction");
@@ -367,9 +371,8 @@ public class AIModelManager implements AIModelService{
         ResponseEntity<String> responseWriteData = null;
         
         try {
-            RestTemplate restTemplate = new RestTemplate();
             ObjectMapper objectMapper = new ObjectMapper();
-            String apiUrl = "https://kuryenetmlflask-b86f952ff9a1.herokuapp.com/write_data";
+            String apiUrl = "http://127.0.0.1:5000/write_data";
 
             String jsonRequest = objectMapper.writeValueAsString(aiModelWriteDataRequest);
 
@@ -381,7 +384,7 @@ public class AIModelManager implements AIModelService{
             // Http Entity 
             HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
 
-            responseWriteData = restTemplate.postForEntity(apiUrl, entity, String.class);
+            responseWriteData = externalApiClient.postAiModel(apiUrl, entity);
             
 
                  

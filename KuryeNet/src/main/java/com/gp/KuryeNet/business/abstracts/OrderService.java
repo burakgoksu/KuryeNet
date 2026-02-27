@@ -19,6 +19,12 @@ public interface OrderService {
 	DataResult<List<Order>> getAllSortedByOrderDate();
 
 	Result add(Order order);
+
+	Result delete(int orderId);
+
+	Result restore(int orderId);
+
+	DataResult<List<Order>> getDeleted();
 	
 	DataResult<Order> getByOrderId(int orderId);
 	

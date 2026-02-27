@@ -1,0 +1,9 @@
+Prometheus
+http://localhost:9090/targets
+
+cd <prometheus_extract_path>
+.\prometheus.exe --config.file="D:\Software\IdeaProject\KuryeNet\observability\prometheus.yml"
+
+
+Grafana
+http://localhost:3000/dashboards

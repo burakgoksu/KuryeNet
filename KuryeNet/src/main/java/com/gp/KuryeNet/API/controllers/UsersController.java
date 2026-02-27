@@ -1,34 +1,28 @@
 package com.gp.KuryeNet.API.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gp.KuryeNet.business.abstracts.UserService;
 import com.gp.KuryeNet.core.entities.User;
+import com.gp.KuryeNet.core.entities.UserDto;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
-import com.gp.KuryeNet.core.utulities.result.DataResult;
-import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
-
+import com.gp.KuryeNet.core.utulities.mapper.ResultMapper;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping(path = { "${api.base-path:/api}/users", "${api.versioned-base-path:/api/v1}/users" })
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UsersController {
 	
 	private UserService userService;
@@ -48,7 +42,24 @@ public class UsersController {
 	
 	@GetMapping("/getByEmail")
 	public ResponseEntity<?> getByEmail(@Valid @RequestParam String email) {
-		return Utils.getResponseEntity(this.userService.getByEmail(email));
+		return Utils.getResponseEntity(ResultMapper.mapIfSuccess(this.userService.getByEmail(email),
+				user -> new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail())));
+	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<?> delete(@RequestParam int userId) {
+		return Utils.getResponseEntity(this.userService.delete(userId));
+	}
+
+	@PostMapping("/restore")
+	public ResponseEntity<?> restore(@RequestParam int userId) {
+		return Utils.getResponseEntity(this.userService.restore(userId));
+	}
+
+	@GetMapping("/deleted")
+	public ResponseEntity<?> getDeleted() {
+		return Utils.getResponseEntity(ResultMapper.mapListIfSuccess(this.userService.getDeleted(),
+				user -> new UserDto(user.getId(), user.getName(), user.getSurname(), user.getEmail())));
 	}
 	
 	
@@ -67,3 +78,4 @@ public class UsersController {
 	
 }
  
+

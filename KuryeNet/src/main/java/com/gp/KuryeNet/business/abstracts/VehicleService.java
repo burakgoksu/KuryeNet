@@ -17,6 +17,12 @@ public interface VehicleService {
 	DataResult<List<Vehicle>> getAllSortedByBrand();
 
 	Result add(Vehicle vehicle);
+
+	Result delete(int vehicleId);
+
+	Result restore(int vehicleId);
+
+	DataResult<List<Vehicle>> getDeleted();
 	
 	DataResult<Vehicle> getByVehicleId(int vehicleId);
 	

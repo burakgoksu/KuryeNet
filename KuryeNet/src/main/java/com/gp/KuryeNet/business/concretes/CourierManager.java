@@ -16,9 +16,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +36,7 @@ import com.gp.KuryeNet.core.business.abstracts.AIModelService;
 import com.gp.KuryeNet.core.business.abstracts.SchedulerService;
 import com.gp.KuryeNet.core.business.concretes.SchedulerManager;
 import com.gp.KuryeNet.core.entities.ApiError;
+import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
@@ -41,6 +44,7 @@ import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
+import com.gp.KuryeNet.core.utulities.security.SecurityUtils;
 import com.gp.KuryeNet.dataAccess.abstracts.CourierDao;
 import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Courier;
@@ -49,7 +53,6 @@ import com.gp.KuryeNet.entities.dtos.CourierWithOrderDto;
 import com.gp.KuryeNet.entities.dtos.CourierWithVehicleDto;
 import com.gp.KuryeNet.entities.dtos.StartOrderWithCourierDto;
 
-import net.bytebuddy.asm.Advice.Local;
 
 
 @Service
@@ -81,6 +84,7 @@ public class CourierManager implements CourierService{
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersAll")
 	public DataResult<List<Courier>> getAll() {
 		return new SuccessDataResult<List<Courier>>(this.courierDao.findAll());
 	}
@@ -88,6 +92,7 @@ public class CourierManager implements CourierService{
 	@Transactional
 	@Async
 	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersSortedByName","couriersById","couriersByEmail","couriersByIdentity","couriersByCity","courierWithVehicle","courierWithOrder","ordersById","ordersByNumber"}, allEntries = true)
 	public Result add(Courier courier) {
 		addressCheckService.existsPhoneNumber(courier.getCourierAddress().getPhoneNumber());
 		addressCheckService.validPhoneNumber(courier.getCourierAddress().getPhoneNumber());
@@ -112,12 +117,14 @@ public class CourierManager implements CourierService{
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersByIdentity", key = "#courierIdentityNumber")
 	public DataResult<Courier> getByCourierIdentityNumber(String courierIdentityNumber) {
 		return new SuccessDataResult<Courier>(this.courierDao.getByCourierIdentityNumber(courierIdentityNumber));
 
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersByEmail", key = "#courierEmail")
 	public DataResult<Courier> getByCourierEmail(String courierEmail) {
 		return new SuccessDataResult<Courier>(this.courierDao.getByCourierEmail(courierEmail));
 
@@ -131,24 +138,28 @@ public class CourierManager implements CourierService{
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersSortedByName")
 	public DataResult<List<Courier>> getAllSortedByCourierName() {
 		Sort sort = Sort.by(Sort.Direction.ASC,"courierName");
 		return new SuccessDataResult<List<Courier>>(this.courierDao.findAll(sort),"ASC Couriers listed successfully");
 	}
 
 	@Override
+	@Cacheable(cacheNames = "courierWithVehicle")
 	public DataResult<List<CourierWithVehicleDto>> getCourierWithVehicleDetails() {
 		return new SuccessDataResult<List<CourierWithVehicleDto>>(this.courierDao.getCourierWithVehicleDetails());
 
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersByCity", key = "#city")
 	public DataResult<List<Courier>> getByCourierAddress_City(String city) {
 		return new SuccessDataResult<List<Courier>>(this.courierDao.getByCourierAddress_City(city));
 
 	}
 
 	@Override
+	@Cacheable(cacheNames = "couriersById", key = "#courierId")
 	public DataResult<Courier> getByCourierId(int courierId) {
 		courierCheckService.existsCourierById(courierId);
 		return new SuccessDataResult<Courier>(this.courierDao.getByCourierId(courierId));
@@ -162,6 +173,7 @@ public class CourierManager implements CourierService{
 	@Async
 	@Transactional
 	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersById","couriersByEmail","courierWithOrder","ordersById","ordersByNumber"}, allEntries = true)
 	public Result startOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.availableOrder(orderId);
@@ -184,6 +196,7 @@ public class CourierManager implements CourierService{
 	@Async
 	@Transactional
 	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersById","couriersByEmail","courierWithOrder","ordersById","ordersByNumber"}, allEntries = true)
 	public Result endOrder(int orderId, String courierEmail) {
 		orderCheckService.existsOrderById(orderId);
 		orderCheckService.distributionOrder(orderId);
@@ -256,6 +269,7 @@ public class CourierManager implements CourierService{
 	@Async
 	@Transactional
 	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersById","couriersByEmail"}, allEntries = true)
 	public Result updateCourierCoordinates(String courierEmail, double latitude, double longitude) {
 		
 		Courier courier = this.courierDao.getByCourierEmail(courierEmail);
@@ -274,12 +288,43 @@ public class CourierManager implements CourierService{
 
 	@Async
 	@Override
+	@Cacheable(cacheNames = "courierWithOrder", key = "#orderNumber")
 	public DataResult<CourierWithOrderDto> getCourierWithOrderDetails(String orderNumber) {
 		return new SuccessDataResult<CourierWithOrderDto>(this.courierDao.getCourierWithOrderDetails(orderNumber),"CourierWithOrderDetails listed!");
 
 	}
 
 	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersSortedByName","couriersById","couriersByEmail","couriersByIdentity","couriersByCity","courierWithVehicle","courierWithOrder"}, allEntries = true)
+	public Result delete(int courierId) {
+		courierCheckService.existsCourierById(courierId);
+		ErrorDataResult<ApiError> errors= Utils.getErrorsIfExist(courierCheckService);
+		if(errors!=null) return errors;
+
+		int updated = courierDao.softDeleteById(courierId, Instant.now(), SecurityUtils.resolveCurrentUser());
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("courier deleted");
+	}
+
+	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersSortedByName","couriersById","couriersByEmail","couriersByIdentity","couriersByCity","courierWithVehicle","courierWithOrder"}, allEntries = true)
+	public Result restore(int courierId) {
+		int updated = courierDao.restoreById(courierId);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("courier restored");
+	}
+
+	@Override
+	public DataResult<List<Courier>> getDeleted() {
+		return new SuccessDataResult<List<Courier>>(courierDao.getDeleted());
+	}
+
+	@Override
+	@CacheEvict(cacheNames = {"couriersAll","couriersById","couriersByEmail"}, allEntries = true)
 	public Result updateCourierCoordinatesSimulate(String courierEmail) {
 		List<double[]> coordinatesList = Arrays.asList(
 	            new double[]{40.975154, 29.134751},

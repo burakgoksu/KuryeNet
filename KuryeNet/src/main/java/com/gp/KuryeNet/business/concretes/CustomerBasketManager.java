@@ -1,6 +1,7 @@
 package com.gp.KuryeNet.business.concretes;
 
 import java.util.List;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.ErrorDataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
@@ -24,6 +26,8 @@ import com.gp.KuryeNet.dataAccess.abstracts.OrderDao;
 import com.gp.KuryeNet.entities.concretes.Customer;
 import com.gp.KuryeNet.entities.concretes.CustomerBasket;
 import com.gp.KuryeNet.entities.concretes.Order;
+import com.gp.KuryeNet.core.utulities.Util.Msg;
+import com.gp.KuryeNet.core.utulities.security.SecurityUtils;
 
 @Service
 public class CustomerBasketManager implements CustomerBasketService{
@@ -96,9 +100,26 @@ public class CustomerBasketManager implements CustomerBasketService{
 		ErrorDataResult<ApiError> errors = Utils.getErrorsIfExist(customerBasketCheckService);
 		if(errors!=null) return errors;
 		
-		CustomerBasket customerBasket = customerBasketDao.getByOrder_OrderNumber(orderNumber);
-		customerBasketDao.delete(customerBasket);
+		String deletedBy = SecurityUtils.resolveCurrentUser();
+		int updated = customerBasketDao.softDeleteByOrderNumber(orderNumber, Instant.now(), deletedBy);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
 		return new SuccessResult("customerBasket deleted");
+	}
+
+	@Override
+	public DataResult<List<CustomerBasket>> getDeleted() {
+		return new SuccessDataResult<List<CustomerBasket>>(this.customerBasketDao.getDeleted());
+	}
+
+	@Override
+	public Result restore(int customerBasketId) {
+		int updated = customerBasketDao.restoreById(customerBasketId);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_EXIST.get("CustomerBasket"));
+		}
+		return new SuccessResult("customerBasket restored");
 	}
 
 }

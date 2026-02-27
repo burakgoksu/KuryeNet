@@ -1,11 +1,13 @@
 package com.gp.KuryeNet.API.controllers;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +22,8 @@ import com.gp.KuryeNet.core.utulities.Util.Utils;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/roles")
+@RequestMapping(path = { "${api.base-path:/api}/roles", "${api.versioned-base-path:/api/v1}/roles" })
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class RoleControllers {
 
 	private RoleService roleService;
@@ -47,5 +50,21 @@ public class RoleControllers {
 	public ResponseEntity<?> getByRoleName(@Valid @RequestParam String roleName) {
 		return Utils.getResponseEntity(this.roleService.getByRoleName(roleName));
 	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<?> delete(@RequestParam int roleId) {
+		return Utils.getResponseEntity(this.roleService.delete(roleId));
+	}
+
+	@PostMapping("/restore")
+	public ResponseEntity<?> restore(@RequestParam int roleId) {
+		return Utils.getResponseEntity(this.roleService.restore(roleId));
+	}
+
+	@GetMapping("/deleted")
+	public ResponseEntity<?> getDeleted() {
+		return Utils.getResponseEntity(this.roleService.getDeleted());
+	}
 	
 }
+

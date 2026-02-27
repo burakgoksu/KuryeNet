@@ -2,7 +2,7 @@ package com.gp.KuryeNet.business.abstracts;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import com.gp.KuryeNet.core.utulities.result.DataResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
@@ -21,6 +21,12 @@ public interface CourierService {
 	DataResult<List<Courier>> getAllSortedByCourierName();
 	
 	Result add(Courier courier);
+
+	Result delete(int courierId);
+
+	Result restore(int courierId);
+
+	DataResult<List<Courier>> getDeleted();
 	
 	Result updateCourierCoordinates(String courierEmail, double latitude,double longitude);
 	

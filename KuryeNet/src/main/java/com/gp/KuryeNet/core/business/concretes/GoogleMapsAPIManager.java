@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gp.KuryeNet.core.business.abstracts.GoogleMapsAPIService;
 import com.gp.KuryeNet.core.business.abstracts.check.GoogleMapsAPICheckService;
 import com.gp.KuryeNet.core.business.concretes.check.GoogleMapsAPICheckManager;
+import com.gp.KuryeNet.core.clients.ExternalApiClient;
 import com.gp.KuryeNet.core.entities.ApiError;
 import com.gp.KuryeNet.core.entities.DirectionsResponse;
 import com.gp.KuryeNet.core.utulities.Util.Utils;
@@ -46,16 +46,17 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 	private CustomerDao customerDao;
 	private OrderDao orderDao;
 	private GoogleMapsAPICheckService googleMapsAPICheckService;
-	private RestTemplate restTemplate;
+	private ExternalApiClient externalApiClient;
 	
 	@Autowired
-	public GoogleMapsAPIManager(CourierDao courierDao, CustomerDao customerDao,RestTemplate restTemplate,OrderDao orderDao,GoogleMapsAPICheckService googleMapsAPICheckService) {
+	public GoogleMapsAPIManager(CourierDao courierDao, CustomerDao customerDao, OrderDao orderDao,
+			GoogleMapsAPICheckService googleMapsAPICheckService, ExternalApiClient externalApiClient) {
 		super();
 		this.courierDao = courierDao;
 		this.customerDao = customerDao;
 		this.orderDao = orderDao;
-		this.restTemplate = restTemplate;
 		this.googleMapsAPICheckService = googleMapsAPICheckService;
+		this.externalApiClient = externalApiClient;
 	}
 	
 
@@ -89,8 +90,6 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		
 		//System.out.println(orign);
 		
-        RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
 
         String url = "https://maps.googleapis.com/maps/api/directions/json";
@@ -103,7 +102,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 .queryParam("traffic_model", "best_guess"); 
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+        ResponseEntity<String> response = externalApiClient.getGoogleMaps(builder.toUriString(), requestEntity);
 
         //System.out.println(response);
 
@@ -204,8 +203,6 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
 		
 		//System.out.println(orign);
 		
-        RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
 
         String url = "https://maps.googleapis.com/maps/api/directions/json";
@@ -220,7 +217,7 @@ public class GoogleMapsAPIManager implements GoogleMapsAPIService{
                 .queryParam("emission", emission);
 
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, requestEntity, String.class);
+        ResponseEntity<String> response = externalApiClient.getGoogleMaps(builder.toUriString(), requestEntity);
         String responseBody = response.getBody();
         //System.out.print(responseBody);
         

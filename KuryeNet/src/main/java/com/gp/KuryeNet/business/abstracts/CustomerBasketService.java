@@ -17,7 +17,11 @@ public interface CustomerBasketService {
 	Result add(String customerEmail, String orderNumber);
 	
 	Result delete(String orderNumber);
-	
+
+	DataResult<List<CustomerBasket>> getDeleted();
+
+	Result restore(int customerBasketId);
+
 	DataResult<CustomerBasket> getByOrder_OrderNumber(String orderNumber);
 	
 	DataResult<List<CustomerBasket>> getByCustomer_CustomerEmail(String customerEmail);

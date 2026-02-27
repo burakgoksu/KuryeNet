@@ -1,6 +1,6 @@
 package com.gp.KuryeNet.API.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import com.gp.KuryeNet.core.utulities.jwt.JwtUtil;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/openweathermap")
+@RequestMapping(path = { "${api.base-path:/api}/openweathermap", "${api.versioned-base-path:/api/v1}/openweathermap" })
 public class OpenWeatherMapController {
 	
 	private OpenWeatherMapService openWeatherMapService;
@@ -41,3 +41,4 @@ public class OpenWeatherMapController {
 	
 
 }
+

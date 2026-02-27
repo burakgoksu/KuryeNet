@@ -1,0 +1,15 @@
+# IDE artifacts
+/.idea/
+*.iml
+
+# Build outputs
+/target/
+
+# Temp files
+*.log
+*.tmp
+*.bak
+.DS_Store
+
+# KuryeNet-specific temp files
+/KuryeNet/tmp-jwt-*.txt

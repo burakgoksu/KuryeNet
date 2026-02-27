@@ -1,0 +1,787 @@
+openapi: 3.0.3
+info:
+  title: KuryeNet API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8585
+paths:
+  /api/addresses/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/addresses/getAllSortedByCity:
+    get:
+      summary: getAllSortedByCity
+      responses:
+        '200': { description: OK }
+  /api/addresses/getByAddressTitle:
+    get:
+      summary: getByAddressTitle
+      parameters:
+        - in: query
+          name: addressTitle
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/addresses/getByCity:
+    get:
+      summary: getByCity
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/addresses/getById:
+    get:
+      summary: getByAddressId
+      parameters:
+        - in: query
+          name: id
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/addresses/getByPhoneNumber:
+    get:
+      summary: getByPhoneNumber
+      parameters:
+        - in: query
+          name: phoneNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/addresses/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/addresses/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/aimodel/getPrediction:
+    get:
+      summary: getPrediction
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/aimodel/writeData:
+    get:
+      summary: writeData
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/books/getByPageNumber:
+    get:
+      summary: getByPageNumber
+      parameters:
+        - in: query
+          name: pageNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/books/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/couriers/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/couriers/endOrder:
+    post:
+      summary: endOrder
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/existsByCourierEmail:
+    get:
+      summary: existsByCourierEmail
+      responses:
+        '200': { description: OK }
+  /api/couriers/getAllSortedByCourierName:
+    get:
+      summary: getAllSortedByCourierName
+      responses:
+        '200': { description: OK }
+  /api/couriers/getByCourierCity:
+    get:
+      summary: getByCourierAddress_City
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/getByCourierEmail:
+    get:
+      summary: getByCourierEmail
+      responses:
+        '200': { description: OK }
+  /api/couriers/getByCourierIdWithOrderId:
+    get:
+      summary: getByCourierIdWithOrderId
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/getByCourierIdentityNumber:
+    get:
+      summary: getByCourierIdentityNumber
+      parameters:
+        - in: query
+          name: courierIdentityNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/getByCourierNameAndSurname:
+    get:
+      summary: getByCourierNameAndCourierSurname
+      responses:
+        '200': { description: OK }
+  /api/couriers/getById:
+    get:
+      summary: getByCourierId
+      parameters:
+        - in: query
+          name: addressId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/getCourierWithOrderDetails:
+    get:
+      summary: getCourierWithOrderDetails
+      parameters:
+        - in: query
+          name: orderNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/getCourierWithVehicleDetails:
+    get:
+      summary: getCourierWithVehicleDetails
+      responses:
+        '200': { description: OK }
+  /api/couriers/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/couriers/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/startOrder:
+    post:
+      summary: startOrder
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/updateCourierCoordinates:
+    put:
+      summary: updateCourierCoordinates
+      parameters:
+        - in: query
+          name: latitude
+          schema: { type: string }
+        - in: query
+          name: longitude
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/couriers/updateCourierCoordinatesSimulate:
+    put:
+      summary: updateCourierCoordinatesSimulate
+      responses:
+        '200': { description: OK }
+  /api/customers/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/customers/getAllSortedByCustomerName:
+    get:
+      summary: getAllSortedByCustomerName
+      responses:
+        '200': { description: OK }
+  /api/customers/getByAddressId:
+    get:
+      summary: getByCustomerAddress_AddressId
+      parameters:
+        - in: query
+          name: addressId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customers/getByCity:
+    get:
+      summary: getByCustomerAddress_City
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customers/getByCustomerEmail:
+    get:
+      summary: getByCustomerEmail
+      responses:
+        '200': { description: OK }
+  /api/customers/getByCustomerId:
+    get:
+      summary: getByCustomerId
+      parameters:
+        - in: query
+          name: customerId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customers/getByCustomerNameAndSurname:
+    get:
+      summary: getByCustomerNameAndCustomerSurname
+      parameters:
+        - in: query
+          name: customerName
+          schema: { type: string }
+        - in: query
+          name: customerSurname
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customers/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/customers/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customers/update:
+    post:
+      summary: update
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/add:
+    post:
+      summary: add
+      parameters:
+        - in: query
+          name: orderNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/delete:
+    delete:
+      summary: delete
+      parameters:
+        - in: query
+          name: orderNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/getByCustomerEmail:
+    get:
+      summary: getByCustomerEmail
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/getByOrderNumber:
+    get:
+      summary: getByOrderNumber
+      parameters:
+        - in: query
+          name: orderNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/customersbaskets/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/googlemaps/getDirectionsFromGoogleMaps:
+    get:
+      summary: getDirectionsFromGoogleMaps
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/googlemaps/getRemainingDataFromGoogleMaps:
+    get:
+      summary: getRemainingDataFromGoogleMaps
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/openweathermap/getWeather:
+    get:
+      summary: getRemainingDataFromGoogleMaps
+      responses:
+        '200': { description: OK }
+  /api/orders/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/orders/getAllSortedByOrderDate:
+    get:
+      summary: getAllSortedByOrderDate
+      responses:
+        '200': { description: OK }
+  /api/orders/getByCourierIdIn:
+    get:
+      summary: getByCourierIdIn
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderAddressId:
+    get:
+      summary: getByOrderAddress_AddressId
+      parameters:
+        - in: query
+          name: addressId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderDate:
+    get:
+      summary: getByOrderDate
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderHourAndOrderStatus:
+    get:
+      summary: getByOrderHourAndOrderStatus
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderId:
+    get:
+      summary: getByOrderId
+      parameters:
+        - in: query
+          name: orderId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderNumber:
+    get:
+      summary: getByOrderNumber
+      parameters:
+        - in: query
+          name: orderNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderStatus:
+    get:
+      summary: getByOrderStatus
+      parameters:
+        - in: query
+          name: orderStatus
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderType:
+    get:
+      summary: getByOrderType
+      parameters:
+        - in: query
+          name: orderType
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderWithAddressDetails:
+    get:
+      summary: getByOrderWithAddressDetails
+      responses:
+        '200': { description: OK }
+  /api/orders/getByOrderWithCourierDetails:
+    get:
+      summary: getByOrderWithCourierDetails
+      responses:
+        '200': { description: OK }
+  /api/orders/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/orders/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/providers/getAllSortedByProviderName:
+    get:
+      summary: getAllSortedByProviderName
+      responses:
+        '200': { description: OK }
+  /api/providers/getByAddressId:
+    get:
+      summary: getByAddress_AddressId
+      parameters:
+        - in: query
+          name: addressId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderCity:
+    get:
+      summary: getByProviderAddress_City
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderCityAndDistrict:
+    get:
+      summary: getByProviderAddress_CityAndProviderAddress_District
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+        - in: query
+          name: district
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderDistrict:
+    get:
+      summary: getByProviderAddress_District
+      parameters:
+        - in: query
+          name: district
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderId:
+    get:
+      summary: getByProviderId
+      parameters:
+        - in: query
+          name: providerId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderMersisNo:
+    get:
+      summary: getByProviderMersisNo
+      parameters:
+        - in: query
+          name: providerMersisNo
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderName:
+    get:
+      summary: getByProviderName
+      parameters:
+        - in: query
+          name: providerName
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getByProviderType:
+    get:
+      summary: getByProviderType
+      parameters:
+        - in: query
+          name: providerType
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/providers/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/providers/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/roles/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/roles/getByRoleId:
+    get:
+      summary: getByRoleId
+      parameters:
+        - in: query
+          name: roleId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/roles/getByRoleName:
+    get:
+      summary: getByRoleName
+      parameters:
+        - in: query
+          name: roleName
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/users/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/users/getByEmail:
+    get:
+      summary: getByEmail
+      parameters:
+        - in: query
+          name: email
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/usersroles/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/usersroles/getByRoleName:
+    get:
+      summary: getByRoleName
+      parameters:
+        - in: query
+          name: roleName
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/usersroles/getByUserEmail:
+    get:
+      summary: getByUserEmail
+      parameters:
+        - in: query
+          name: userEmail
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/add:
+    post:
+      summary: add
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getAllSortedByBrand:
+    get:
+      summary: getAllSortedByBrand
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getAllSortedByYear:
+    get:
+      summary: getAllSortedByYear
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByCourierId:
+    get:
+      summary: getByCouriers_CourierId
+      parameters:
+        - in: query
+          name: courierId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByCourierIdentityNumber:
+    get:
+      summary: getByCouriers_CourierIdentityNumber
+      parameters:
+        - in: query
+          name: courierIdentityNumber
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByCourierNameAndCourierSurname:
+    get:
+      summary: getByCouriers_CourierNameAndCouriers_CourierSurname
+      parameters:
+        - in: query
+          name: courierName
+          schema: { type: string }
+        - in: query
+          name: courierSurname
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehicleBrand:
+    get:
+      summary: getByVehicleBrand
+      parameters:
+        - in: query
+          name: vehicleBrand
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehicleId:
+    get:
+      summary: getByVehicleId
+      parameters:
+        - in: query
+          name: vehicleId
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehicleModel:
+    get:
+      summary: getByVehicleModel
+      parameters:
+        - in: query
+          name: vehicleModel
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehiclePlate:
+    get:
+      summary: getByVehiclePlate
+      parameters:
+        - in: query
+          name: vehiclePlate
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehicleType:
+    get:
+      summary: getByVehicleType
+      parameters:
+        - in: query
+          name: vehicleType
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getByVehicleYear:
+    get:
+      summary: getByVehicleYear
+      parameters:
+        - in: query
+          name: vehicleYear
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getall:
+    get:
+      summary: getAll
+      responses:
+        '200': { description: OK }
+  /api/vehicles/getallByPage:
+    get:
+      summary: getAll
+      parameters:
+        - in: query
+          name: pageNo
+          schema: { type: string }
+        - in: query
+          name: pageSize
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /auth/registerCourier:
+    post:
+      summary: createUserCourier
+      responses:
+        '200': { description: OK }
+  /auth/registerCustomer:
+    post:
+      summary: createUserCustomer
+      responses:
+        '200': { description: OK }
+  /authentication/login:
+    post:
+      summary: createAuthenticationToken
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    AuthenticationRequest:
+      type: object
+      properties:
+        email: { type: string }
+        password: { type: string }
+      required: [email, password]
+    AuthenticationResponse:
+      type: object
+      properties:
+        jwt: { type: string }
+    SignupDto:
+      type: object
+      properties:
+        name: { type: string }
+        surname: { type: string }
+        email: { type: string }
+        password: { type: string }
+      required: [name, surname, email, password]

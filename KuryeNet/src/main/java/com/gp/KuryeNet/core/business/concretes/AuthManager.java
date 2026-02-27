@@ -1,10 +1,10 @@
 package com.gp.KuryeNet.core.business.concretes;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gp.KuryeNet.core.business.abstracts.AuthService;
@@ -30,14 +30,17 @@ public class AuthManager implements AuthService{
 	private UserRoleDao userRoleDao;
 	private RoleDao roleDao;
 	private AuthCheckService authCheckService;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public AuthManager(UserDao userDao,AuthCheckService authCheckService,UserRoleDao userRoleDao,RoleDao roleDao) {
+	public AuthManager(UserDao userDao,AuthCheckService authCheckService,UserRoleDao userRoleDao,RoleDao roleDao,
+			PasswordEncoder passwordEncoder) {
 		super();
 		this.userDao = userDao;
 		this.userRoleDao = userRoleDao;
 		this.roleDao = roleDao;
 		this.authCheckService = authCheckService;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Async
@@ -54,7 +57,7 @@ public class AuthManager implements AuthService{
         user.setName(signupDto.getName());
         user.setSurname(signupDto.getSurname());
         user.setEmail(signupDto.getEmail());
-        user.setPassword(new BCryptPasswordEncoder().encode(signupDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
         
         UserRole userRole = new UserRole();
         Role role = roleDao.getByRoleName("COURIER");
@@ -87,7 +90,7 @@ public class AuthManager implements AuthService{
         user.setName(signupDto.getName());
         user.setSurname(signupDto.getSurname());
         user.setEmail(signupDto.getEmail());
-        user.setPassword(new BCryptPasswordEncoder().encode(signupDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
         
         UserRole userRole = new UserRole();
         Role role = roleDao.getByRoleName("CUSTOMER");

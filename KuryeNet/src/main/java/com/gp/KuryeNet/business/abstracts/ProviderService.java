@@ -15,6 +15,12 @@ public interface ProviderService {
 	DataResult<List<Provider>> getAllSortedByProviderName();
 	
 	Result add(Provider provider);
+
+	Result delete(int providerId);
+
+	Result restore(int providerId);
+
+	DataResult<List<Provider>> getDeleted();
 	
 	DataResult<Provider> getByProviderName(String providerName);
 	

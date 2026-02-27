@@ -1,8 +1,9 @@
 package com.gp.KuryeNet.core.business.concretes;
 
 import java.util.List;
+import java.time.Instant;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +15,11 @@ import com.gp.KuryeNet.core.dataAccess.RoleDao;
 import com.gp.KuryeNet.core.entities.Role;
 import com.gp.KuryeNet.core.utulities.Util.Msg;
 import com.gp.KuryeNet.core.utulities.result.DataResult;
+import com.gp.KuryeNet.core.utulities.result.ErrorResult;
 import com.gp.KuryeNet.core.utulities.result.Result;
 import com.gp.KuryeNet.core.utulities.result.SuccessDataResult;
 import com.gp.KuryeNet.core.utulities.result.SuccessResult;
+import com.gp.KuryeNet.core.utulities.security.SecurityUtils;
 
 @Service
 public class RoleManager implements RoleService{
@@ -59,6 +62,29 @@ public class RoleManager implements RoleService{
 	@Override
 	public DataResult<Role> getByRoleName(String roleName) {
 		return new SuccessDataResult<Role>(this.roleDao.getByRoleName(roleName));
+	}
+
+	@Override
+	public Result delete(int roleId) {
+		int updated = roleDao.softDeleteById(roleId, Instant.now(), SecurityUtils.resolveCurrentUser());
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("role deleted");
+	}
+
+	@Override
+	public Result restore(int roleId) {
+		int updated = roleDao.restoreById(roleId);
+		if (updated == 0) {
+			return new ErrorResult(Msg.NOT_FOUND.get());
+		}
+		return new SuccessResult("role restored");
+	}
+
+	@Override
+	public DataResult<List<Role>> getDeleted() {
+		return new SuccessDataResult<List<Role>>(roleDao.getDeleted());
 	}
 
 }

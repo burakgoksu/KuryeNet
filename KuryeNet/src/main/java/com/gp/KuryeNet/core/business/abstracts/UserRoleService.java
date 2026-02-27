@@ -15,6 +15,12 @@ public interface UserRoleService {
 	DataResult<List<UserRole>> getAll(int pageNo, int pageSize);
 	
 	Result add(UserRole userRole);
+
+	Result delete(int userRoleId);
+
+	Result restore(int userRoleId);
+
+	DataResult<List<UserRole>> getDeleted();
 	
 	DataResult<List<UserRole>> getByRole_RoleName(String roleName);
 	

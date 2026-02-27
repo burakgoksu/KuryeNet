@@ -13,6 +13,12 @@ public interface RoleService {
 	DataResult<List<Role>> getAll(int pageNo, int pageSize);
 	
 	Result add(Role role);
+
+	Result delete(int roleId);
+
+	Result restore(int roleId);
+
+	DataResult<List<Role>> getDeleted();
 	
 	DataResult<Role> getByRoleId(int roleId);
 	
